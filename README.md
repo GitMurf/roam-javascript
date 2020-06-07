@@ -1,1 +1,7 @@
 # roam-javascript
+
+DETAILED INSTRUCTIONS AND DEMO TO COME... FOR NOW JUST WANT TO GET THE CODE OUT TO FOLKS
+
+# QUICK DEMO
+
+![4d7QJXfe0U](https://user-images.githubusercontent.com/64155612/83960323-5e311300-a83c-11ea-900b-c309c982b9c3.gif)
