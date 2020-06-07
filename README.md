@@ -39,4 +39,4 @@
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
-This project is licensed under the **[MIT license](http://opensource.org/licenses/mit-license.php)** - see the [LICENSE](LICENSE) file for details
+This project is licensed under the **MIT license** - see the [LICENSE](LICENSE) file for details
