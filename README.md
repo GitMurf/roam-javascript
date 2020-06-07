@@ -24,6 +24,10 @@
 
 ![QPRhdMkgML](https://user-images.githubusercontent.com/64155612/83976642-219eff00-a8b0-11ea-8157-3379884c6be1.gif)
 
+## SAVING AS CODE "SNIPPET" IN CHROME FOR EASY RE-USE
+
+![lA9P0hPp1k](https://user-images.githubusercontent.com/64155612/83977216-8f98f580-a8b3-11ea-86f9-076ab1856055.gif)
+
 ## QUICK DEMO
 
 ![4d7QJXfe0U](https://user-images.githubusercontent.com/64155612/83960323-5e311300-a83c-11ea-900b-c309c982b9c3.gif)
