@@ -34,3 +34,9 @@
 ## QUICK DEMO
 
 ![4d7QJXfe0U](https://user-images.githubusercontent.com/64155612/83960323-5e311300-a83c-11ea-900b-c309c982b9c3.gif)
+
+# License
+
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
+This project is licensed under the **[MIT license](http://opensource.org/licenses/mit-license.php)** - see the [LICENSE](LICENSE) file for details
