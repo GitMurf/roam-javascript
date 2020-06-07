@@ -18,6 +18,12 @@
   - Code: `#fbSearchInput {position: fixed; left: 600px; top: 65px;}`
     - ![image](https://user-images.githubusercontent.com/64155612/83960840-4b214180-a842-11ea-8a90-ef3d17a14834.png)
 
-# QUICK DEMO
+# DEMOS
+
+## MANUAL INSTALL VIA CHROME DEV TOOLS CONSOLE + DEMO
+
+![QPRhdMkgML](https://user-images.githubusercontent.com/64155612/83976642-219eff00-a8b0-11ea-8157-3379884c6be1.gif)
+
+## QUICK DEMO
 
 ![4d7QJXfe0U](https://user-images.githubusercontent.com/64155612/83960323-5e311300-a83c-11ea-900b-c309c982b9c3.gif)
