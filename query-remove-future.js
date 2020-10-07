@@ -1,21 +1,18 @@
-//testingQuery = undefined
-//document.removeEventListener('click', testingQuery)
-
-function testingQuery(evt){
+//v0.1
+//To apply TODO filter, use Ctrl + Click OR Alt + Click on the query syntax when a query is loaded with results
+function todoQueryFilter(evt){
     if(evt.shiftKey || evt.altKey)
     {
         var clickedElem = evt.target
-        //console.log(clickedElem)
         var clickedElemText = clickedElem.innerText
-        //console.log(clickedElemText)
         clickedElemText = clickedElemText.toLowerCase()
-        console.log(clickedElemText)
 
         if(clickedElemText.includes("query:") || clickedElemText.includes("[[query]]:"))
         {
             var querySyntax = clickedElemText
             var startOfBetween = querySyntax.indexOf('between:')
             if(startOfBetween < 0){return;} //Exit function as no between query parameter
+            var hiddenCtr = 0;
 
             var phToday = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
             var phTomorrow = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()+1)
@@ -25,18 +22,17 @@ function testingQuery(evt){
             var phLastWeek = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()-7)
             var phLastMonth = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()-31)
 
-                //Find "between"
+            //Find "between"
+            var afterBetween = querySyntax.substring(startOfBetween + 8)
+            var endOfBetween = afterBetween.indexOf('}')
+            var dateRangeStr = afterBetween.substring(0,endOfBetween).trim()
+            var startDateStr = dateRangeStr.substring(0,dateRangeStr.indexOf(' [[')).trim().split("[").join("").split("]").join("")
+            var endDateStr = dateRangeStr.substring(dateRangeStr.indexOf(' [[')).trim().split("[").join("").split("]").join("")
+            var startDate
+            var endDate
 
-                var afterBetween = querySyntax.substring(startOfBetween + 8)
-                var endOfBetween = afterBetween.indexOf('}')
-                var dateRangeStr = afterBetween.substring(0,endOfBetween).trim()
-                var startDateStr = dateRangeStr.substring(0,dateRangeStr.indexOf(' [[')).trim().split("[").join("").split("]").join("")
-                var endDateStr = dateRangeStr.substring(dateRangeStr.indexOf(' [[')).trim().split("[").join("").split("]").join("")
-                var startDate
-                var endDate
-
-            console.log(startDateStr)
-            console.log(endDateStr)
+            //console.log(startDateStr)
+            //console.log(endDateStr)
 
             switch(startDateStr)
             {
@@ -101,43 +97,31 @@ function testingQuery(evt){
                 startDate = tmpEndDate
             }
 
-            console.log("Start Date:")
-            console.log(startDate)
-            console.log("End Date:")
-            console.log(endDate)
-
-            //console.log(clickedElem)
-            //console.log(clickedElem.className)
-            //console.log(clickedElemText)
             var queryParent = clickedElem.parentElement
-            //console.log(queryParent.className)
             var queryResults = queryParent.getElementsByClassName("rm-mentions refs-by-page-view");
             queryResults = queryResults[0]
-            //console.log(queryResults)
             var childrenResult = queryResults.children;
+
             //Loop through each page that has query results
             for (var i = 0; i < childrenResult.length; i++)
             {
                 //LOOPING THROUGH EACH "PAGE" that has query results under it
 
                 var eachChild = childrenResult[i];
-                //console.log(eachChild)
                 var pageTitle = eachChild.getElementsByClassName("rm-ref-page-view-title");
                 pageTitle = pageTitle[0]
-                //console.log(pageTitle)
                 var pageTitleStr = pageTitle.innerText
-                console.log(pageTitleStr)
                 //Check if page title is a date
                 pageTitleStr = pageTitleStr.replace("st,",",").replace("rd,",",").replace("th,",",").replace("nd,",",")
                 var pgDateTimeValue = Date.parse(pageTitleStr)
                 if(isNaN(pgDateTimeValue))
                 {
-                    console.log("PAGE is Not a date")
+                    //console.log("PAGE is Not a date")
                 }
                 else
                 {
-                    console.log("PAGE is date and is the following...")
-                    console.log(pgDateTimeValue)
+                    //console.log("PAGE is date and is the following...")
+                    //console.log(pgDateTimeValue)
                 }
 
                 var childSections = eachChild.getElementsByClassName("rm-reference-item");
@@ -146,8 +130,7 @@ function testingQuery(evt){
                     //LOOPING THROUGH EACH "SECTION" (nested location of the blocks) THAT HAS BLOCK RESULTS FOR QUERY
 
                     eachSection = childSections[j]
-                    //console.log(eachSection)
-                    console.log(eachSection.innerText)
+                    //console.log(eachSection.innerText)
                     var foundCtr = 0
 
                     var childBlocks = eachSection.getElementsByClassName("roam-block dont-unfocus-block hoverparent rm-block-text");
@@ -156,8 +139,7 @@ function testingQuery(evt){
                         //LOOPING THROUGH EACH BLOCK THAT IS RESULT OF QUERY
 
                         eachBlock = childBlocks[k]
-                        //console.log(eachBlock)
-                        console.log(eachBlock.innerText)
+                        //console.log(eachBlock.innerText)
                         var dateLinks = eachBlock.querySelectorAll('[data-link-title], [data-tag]')
                         var foundDates = 0
                         var foundDateInRange = 0
@@ -169,15 +151,13 @@ function testingQuery(evt){
 
                             if(eachTag !== null && eachTag !== 'undefined' && typeof eachTag !== 'undefined')
                             {
-                                //console.log(eachTag)
-                                console.log(eachTag.innerText)
+                                //console.log(eachTag.innerText)
                                 var startingDate = eachTag.innerText
                                 startingDate = startingDate.replace("st,",",").replace("rd,",",").replace("th,",",").replace("nd,",",").replace("#","")
                                 var dateTimeValue = Date.parse(startingDate)
                                 if(isNaN(dateTimeValue))
                                 {
-                                    console.log("Not a date...")
-                                    //eachBlock.style.display = "none"
+                                    //console.log("Not a date...")
                                 }
                                 else
                                 {
@@ -186,14 +166,12 @@ function testingQuery(evt){
                                     {
                                         foundCtr = foundCtr + 1
                                         foundDateInRange = foundDateInRange + 1
-                                        console.log("Date FOUND!")
-                                        console.log(dateTimeValue)
+                                        //console.log("Date FOUND!")
+                                        //console.log(dateTimeValue)
                                     }
                                     else
                                     {
-                                        console.log("Date FOUND, but OUTSIDE between range...")
-                                        //console.log(dateTimeValue)
-                                        //eachBlock.style.display = "none"
+                                        //console.log("Date FOUND, but OUTSIDE between range...")
                                     }
                                 }
                             }
@@ -206,25 +184,27 @@ function testingQuery(evt){
                         if(foundDates == 0)
                         {
                             //No date in block
-                            console.log("No date was found in this block...")
+                            //console.log("No date was found in this block...")
                             if(isNaN(pgDateTimeValue))
                             {
-                                console.log("PAGE is Not a date AND block is not a Date... HIDING")
+                                //console.log("PAGE is Not a date AND block is not a Date... HIDING")
                                 eachBlock.style.display = "none"
+                                hiddenCtr = hiddenCtr + 1
                             }
                             else
                             {
-                                console.log("No date found in block BUT the page it is on is a Date")
+                                //console.log("No date found in block BUT the page it is on is a Date")
                                 if(pgDateTimeValue >= startDate && pgDateTimeValue <= endDate)
                                 {
-                                    console.log("PAGE date is between the range so keeping this bullet!")
+                                    //console.log("PAGE date is between the range so keeping this bullet!")
                                     foundCtr = foundCtr + 1
                                     foundDateInRange = foundDateInRange + 1
                                 }
                                 else
                                 {
-                                    console.log("PAGE date is NOT between the range so HIDING this bullet!")
+                                    //console.log("PAGE date is NOT between the range so HIDING this bullet!")
                                     eachBlock.style.display = "none"
+                                    hiddenCtr = hiddenCtr + 1
                                 }
                             }
                         }
@@ -232,25 +212,27 @@ function testingQuery(evt){
                         {
                             if(foundDateInRange > 0)
                             {
-                                console.log("Found at least one date in range so keeping it...")
+                                //console.log("Found at least one date in range so keeping it...")
                             }
                             else
                             {
-                                console.log("Dates were FOUND, but ALL were OUTSIDE the between range... HIDING")
+                                //console.log("Dates were FOUND, but ALL were OUTSIDE the between range... HIDING")
                                 eachBlock.style.display = "none"
+                                hiddenCtr = hiddenCtr + 1
                             }
                         }
                     }
 
                     if(foundCtr == 0)
                     {
-                        console.log("Hiding this section...")
+                        //console.log("Hiding this section...")
                         eachSection.style.display = "none"
                     }
                 }
             }
+            console.log(hiddenCtr + " items hidden")
         }
     }
 }
 
-document.addEventListener('click', testingQuery)
+document.addEventListener('click', todoQueryFilter)
