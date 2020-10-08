@@ -1,9 +1,12 @@
 //v0.2
-//To apply TODO filter, use Ctrl + Click OR Alt + Click on the query syntax when a query is loaded with results
+//To apply TODO filter, use Shift + Click on the query syntax when a query is loaded with results
+//Use this link to see GIF of DEMO: https://user-images.githubusercontent.com/64155612/95497383-168bd680-0957-11eb-8949-e8e428ab44f0.gif
 //The goal of this script is to filter out TODOs that only show up because they were added on daily notes page
 //Mainly it is if you want to find overdue tasks, like from the last week, by default a TODO due next week will still
-//show up if you added that TODO on a daily notes page from last week (within the between range)
-//See this Slack discussion for more details: https://roamresearch.slack.com/archives/C012WK8E9DK/p1601992542022100
+    //show up if you added that TODO on a daily notes page from last week (within the between range)
+//Resources about the script:
+    //For detailed discussion, see this Slack thread: https://roamresearch.slack.com/archives/C012WK8E9DK/p1601992542022100
+    //Here is my github repo: https://github.com/GitMurf/roam-javascript
 
 function todoQueryFilter(evt){
     if(evt.shiftKey || evt.altKey)
