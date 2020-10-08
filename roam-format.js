@@ -8,6 +8,8 @@ function convertText(evt){
         var inputTextVal = inputTextBox.value
         inputTextVal = inputTextVal.split("•	").join("    -").split("o	").join("        -").split("	").join("            -")
         clickedElem.value = inputTextVal
+        clickedElem.focus();
+        clickedElem.select();
     }
 }
 
