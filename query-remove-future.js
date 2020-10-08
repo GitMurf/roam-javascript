@@ -1,5 +1,10 @@
-//v0.1
+//v0.2
 //To apply TODO filter, use Ctrl + Click OR Alt + Click on the query syntax when a query is loaded with results
+//The goal of this script is to filter out TODOs that only show up because they were added on daily notes page
+//Mainly it is if you want to find overdue tasks, like from the last week, by default a TODO due next week will still
+//show up if you added that TODO on a daily notes page from last week (within the between range)
+//See this Slack discussion for more details: https://roamresearch.slack.com/archives/C012WK8E9DK/p1601992542022100
+
 function todoQueryFilter(evt){
     if(evt.shiftKey || evt.altKey)
     {
@@ -112,6 +117,7 @@ function todoQueryFilter(evt){
                 pageTitle = pageTitle[0]
                 var pageTitleStr = pageTitle.innerText
                 //Check if page title is a date
+                //Don't actually use this part for anything but leaving in for future
                 pageTitleStr = pageTitleStr.replace("st,",",").replace("rd,",",").replace("th,",",").replace("nd,",",")
                 var pgDateTimeValue = Date.parse(pageTitleStr)
                 if(isNaN(pgDateTimeValue))
@@ -120,8 +126,7 @@ function todoQueryFilter(evt){
                 }
                 else
                 {
-                    //console.log("PAGE is date and is the following...")
-                    //console.log(pgDateTimeValue)
+                    //console.log("PAGE is a date")
                 }
 
                 var childSections = eachChild.getElementsByClassName("rm-reference-item");
@@ -130,9 +135,64 @@ function todoQueryFilter(evt){
                     //LOOPING THROUGH EACH "SECTION" (nested location of the blocks) THAT HAS BLOCK RESULTS FOR QUERY
 
                     eachSection = childSections[j]
-                    //console.log(eachSection.innerText)
-                    var foundCtr = 0
 
+                    //console.log('*******************************')
+                    //console.log(eachSection.innerText)
+                    //console.log('*******************************')
+
+                    //Look for any dates in the "parent" blocks which are called "zoom mentions" in Roam html
+                    var zoomMentions = eachSection.getElementsByClassName("rm-zoom zoom-mentions-view");
+                    zoomMentions = zoomMentions[0]
+                    //Find all page links / tags to see if are dates
+                    var parentDateLinks = zoomMentions.querySelectorAll('[data-link-title], [data-tag]')
+                    //Counting how many dates found in parent blocks inside the between range and also in future outside between range
+                    var parDatesFound = 0
+                    var parDatesIn = 0
+                    var parDatesFuture = 0
+
+                    for (var y = 0; y < parentDateLinks.length; y++)
+                    {
+                        //LOOPING THROUGH EACH PAGE/TAG TO SEE IF IT IS A DATE
+                        eachTag2 = parentDateLinks[y]
+
+                        if(eachTag2 !== null && eachTag2 !== 'undefined' && typeof eachTag2 !== 'undefined')
+                        {
+                            var startingDate2 = eachTag2.innerText
+                            //console.log(startingDate2)
+                            startingDate2 = startingDate2.replace("st,",",").replace("rd,",",").replace("th,",",").replace("nd,",",").replace("#","")
+                            var dateTimeValue2 = Date.parse(startingDate2)
+                            if(isNaN(dateTimeValue2))
+                            {
+                                //console.log("Not a date...")
+                            }
+                            else
+                            {
+                                parDatesFound = parDatesFound + 1
+                                if(dateTimeValue2 >= startDate && dateTimeValue2 <= endDate)
+                                {
+                                    parDatesIn = parDatesIn + 1
+                                    //console.log("Date FOUND in range!")
+                                }
+                                else
+                                {
+                                    //console.log("Date FOUND, but OUTSIDE range...")
+                                    //Check if future date (as opposed to before the between range)
+                                    if(dateTimeValue2 > endDate)
+                                    {
+                                        //If future date then we want to hide because it really isn't "past due"
+                                        parDatesFuture = parDatesFuture + 1
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //No pages/tags in block
+                            //console.log("No pages/tags found in parents")
+                        }
+                    }
+
+                    var foundCtr = 0
                     var childBlocks = eachSection.getElementsByClassName("roam-block dont-unfocus-block hoverparent rm-block-text");
                     for (var k = 0; k < childBlocks.length; k++)
                     {
@@ -143,6 +203,7 @@ function todoQueryFilter(evt){
                         var dateLinks = eachBlock.querySelectorAll('[data-link-title], [data-tag]')
                         var foundDates = 0
                         var foundDateInRange = 0
+                        var foundDateInFuture = 0
                         for (var x = 0; x < dateLinks.length; x++)
                         {
                             //LOOPING THROUGH EACH PAGE/TAG TO SEE IF IT IS A DATE
@@ -164,7 +225,6 @@ function todoQueryFilter(evt){
                                     foundDates = foundDates + 1
                                     if(dateTimeValue >= startDate && dateTimeValue <= endDate)
                                     {
-                                        foundCtr = foundCtr + 1
                                         foundDateInRange = foundDateInRange + 1
                                         //console.log("Date FOUND!")
                                         //console.log(dateTimeValue)
@@ -172,6 +232,12 @@ function todoQueryFilter(evt){
                                     else
                                     {
                                         //console.log("Date FOUND, but OUTSIDE between range...")
+                                        //Check if future date (as opposed to before the between range)
+                                        if(dateTimeValue > endDate)
+                                        {
+                                            //If future date then we want to hide because it really isn't "past due"
+                                            foundDateInFuture = foundDateInFuture + 1
+                                        }
                                     }
                                 }
                             }
@@ -181,51 +247,49 @@ function todoQueryFilter(evt){
                             }
                         }
 
-                        if(foundDates == 0)
+                        if(foundDates > 0)
                         {
-                            //No date in block
-                            //console.log("No date was found in this block...")
-                            if(isNaN(pgDateTimeValue))
+                            //Date(s) in child/TODO block
+                            if(foundDateInFuture > 0)
                             {
-                                //console.log("PAGE is Not a date AND block is not a Date... HIDING")
+                                //Hide block as there is a future date in TODO block (not past due)
                                 eachBlock.style.display = "none"
                                 hiddenCtr = hiddenCtr + 1
                             }
                             else
                             {
-                                //console.log("No date found in block BUT the page it is on is a Date")
-                                if(pgDateTimeValue >= startDate && pgDateTimeValue <= endDate)
-                                {
-                                    //console.log("PAGE date is between the range so keeping this bullet!")
-                                    foundCtr = foundCtr + 1
-                                    foundDateInRange = foundDateInRange + 1
-                                }
-                                else
-                                {
-                                    //console.log("PAGE date is NOT between the range so HIDING this bullet!")
-                                    eachBlock.style.display = "none"
-                                    hiddenCtr = hiddenCtr + 1
-                                }
+                                //Keep showing block
+                                foundCtr = foundCtr + 1
+                            }
+                        }
+                        else if(parDatesFound > 0)
+                        {
+                            //Date(s) in parent block(s)
+                            if(parDatesFuture > 0)
+                            {
+                                //Hide block as no dates in child/TODO and there is a future date in parent block (not past due)
+                                eachBlock.style.display = "none"
+                                hiddenCtr = hiddenCtr + 1
+                            }
+                            else
+                            {
+                                //Keep showing block
+                                foundCtr = foundCtr + 1
                             }
                         }
                         else
                         {
-                            if(foundDateInRange > 0)
-                            {
-                                //console.log("Found at least one date in range so keeping it...")
-                            }
-                            else
-                            {
-                                //console.log("Dates were FOUND, but ALL were OUTSIDE the between range... HIDING")
-                                eachBlock.style.display = "none"
-                                hiddenCtr = hiddenCtr + 1
-                            }
+                            //No dates found in child/TODO or Parent blocks
+                            //Since it is showing up in query results, then the page its on must be a daily notes page within between range
+                            foundCtr = foundCtr + 1
                         }
                     }
 
+                    //Checks to see if any child/TODO block(s) were left shown, if so, do NOT hide the SECTION
                     if(foundCtr == 0)
                     {
                         //console.log("Hiding this section...")
+                        //console.log(eachSection)
                         eachSection.style.display = "none"
                     }
                 }
