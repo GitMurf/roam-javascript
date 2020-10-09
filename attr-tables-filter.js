@@ -1,4 +1,9 @@
 //v0.1
+//MUST have David's Sorting Attribute Tables script installed
+//Details on David Vargas' Sorting Attribute Tables script:
+  //Website: https://roam.davidvargas.me/extensions/attr-tables/
+  //Tweet: https://twitter.com/dvargas92495/status/1313897302201958401?s=20
+
 function filterAttr(evt){
     //Get the sort button clicked by user to activate the filter
     var clickedElem = evt.target
@@ -127,7 +132,8 @@ function filterAttr(evt){
                         {
                             //Col filter value
                             var eachFilterVal = eachHiddenElem.getAttribute('data-filter-value')
-                            var eachFilterText = eachFilterVal.toString().toLowerCase()
+                            var eachFilterTextOrig = eachFilterVal.toString()
+                            var eachFilterText = eachFilterTextOrig.toLowerCase()
 
                             if(eachFilterText !== '')
                             {
@@ -143,10 +149,17 @@ function filterAttr(evt){
                                 }
                                 else
                                 {
-                                    //Did not match the filter
-                                    //console.log('NOT FOUND')
-                                    //Hide the item
-                                    curRow.style.display = "none"
+                                    if(eachFilterTextOrig == 'BLANK' && curElemText == '')
+                                    {
+                                        //Look for empty values; don't hide
+                                    }
+                                    else
+                                    {
+                                        //Did not match the filter and not looking for a BLANK
+                                        //console.log('NOT FOUND')
+                                        //Hide the item
+                                        curRow.style.display = "none"
+                                    }
                                 }
                             }
                             else
