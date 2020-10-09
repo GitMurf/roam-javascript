@@ -1,4 +1,5 @@
 //v0.1
+//DEMO on how to use: https://user-images.githubusercontent.com/64155612/95545151-eaea0a00-09b1-11eb-934e-4b7e544d501d.gif
 //MUST have David's Sorting Attribute Tables script installed
 //Details on David Vargas' Sorting Attribute Tables script:
   //Website: https://roam.davidvargas.me/extensions/attr-tables/
