@@ -1,4 +1,4 @@
-//v0.4
+//v0.4.2
     //Added "grouping" operator with {(} and {)} to allow for combo of and/or conditions
 //Github Gist: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec
 //DEMO on how to use: https://user-images.githubusercontent.com/64155612/95652671-9f198c80-0aa7-11eb-8f8e-bc08fe81b985.gif
@@ -177,6 +177,44 @@ console.log('NOT found')
             }
         }
 
+        function findClosingPar(logicString)
+        {
+console.log('Finding the location of closing parenthesis in "' + logicString + '"')
+            logicStringTrimmed = logicString.trim()
+            var trimAmount = logicString.length - logicStringTrimmed.length
+//console.log('trimAmount: ' + trimAmount)
+            var startLen = logicStringTrimmed.length
+            var foundOpen = 0
+            var foundClose = 0
+
+            for (var i = 0; i < startLen; i++)
+            {
+//console.log('char# ' + i + ' - ' + logicStringTrimmed.substring(i,i+1))
+                if(logicStringTrimmed.substring(i,i+1) == '(')
+                {
+                    //Found open parenthesis
+                    foundOpen++
+                }
+                else
+                {
+                    if(logicStringTrimmed.substring(i,i+1) == ')')
+                    {
+                        //Found close parenthesis
+                        foundClose++
+                    }
+                }
+//console.log('foundOpen: ' + foundOpen)
+//console.log('foundClose: ' + foundClose)
+                if(foundOpen > 0 && foundOpen == foundClose)
+                {
+                    //Found closing / matching parentheses
+console.log('found the closing parenthesis at char: ' + i)
+console.log('The entire group is: ' + logicStringTrimmed.substring(0,i+1))
+                    return logicString.substring(0,i+1+trimAmount)
+                }
+            }
+        }
+
         function evaluateString(valToMatch, stringLogic)
         {
             valToMatch = valToMatch.toLowerCase()
@@ -191,10 +229,17 @@ console.log('NOT found')
             var newCondition = ''
             var bool1
             var bool2
+            var loopCtr = 0
 
             //Loop throught he string logic
             for (var i = 0; i < logicLength; i++)
             {
+                loopCtr++
+                if(loopCtr > logicLength)
+                {
+                    console.log('Endless loop exit')
+                    break
+                }
 console.log('Starting at: ' + i)
                 stringRemaining = stringLogic.substring(i)
 console.log('stringRemaining: ' + stringRemaining)
@@ -216,7 +261,7 @@ console.log('findPar: ' + findPar)
                     foundChar = findPar
                     newCondition = '('
                 }
-                else if (findOr < findAnd || findAnd == -1)
+                else if ((findOr < findAnd && findOr > -1) || findAnd == -1)
                 {
                     //Found OR condition
                     foundChar = findOr
@@ -233,6 +278,7 @@ console.log('prevCondition: ' + prevCondition)
 console.log('newCondition: ' + newCondition)
                 if(prevCondition != '')
                 {
+console.log('bool1 PREVIOUS: ' + bool1)
                     //Finding boolean2
                     if(newCondition == '')
                     {
@@ -240,7 +286,16 @@ console.log('newCondition: ' + newCondition)
                         i = logicLength
                         var string2 = stringRemaining.substring(0).trim()
                         bool2 = findString(valToMatch, string2)
+console.log('****** RESULT ******')
+console.log('FOUND END OF STRING')
+console.log('stringRemaining: ' + stringRemaining)
+console.log('Looked for string2: ' + string2)
+console.log('bool1: ' + bool1)
+console.log('prevCondition: ' + prevCondition)
+console.log('bool2: ' + bool2)
                         if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
+console.log('FINAL RESULT: ' + bool1)
+console.log('****** END OF RESULT ******')
                     }
                     else if(newCondition == 'and' || newCondition == 'or')
                     {
@@ -249,42 +304,122 @@ console.log('newCondition: ' + newCondition)
 
                         //Set boolean 2
                         bool2 = findString(valToMatch, string2)
-
+console.log('****** RESULT ******')
+console.log('stringRemaining: ' + stringRemaining)
+console.log('Looked for string2: ' + string2)
+console.log('bool1: ' + bool1)
+console.log('prevCondition: ' + prevCondition)
+console.log('bool2: ' + bool2)
                         if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
+console.log('FINAL RESULT: ' + bool1)
+console.log('****** END OF RESULT ******')
                     }
                     else
                     {
-                        console.log("PARENTHESES I THINK...")
+                        console.log("PARENTHESES... Calling evaluateString recursively...")
+                        //Find the matching closing parenthesis
+                        var foundGrouping = findClosingPar(stringRemaining)
+                        foundChar = foundGrouping.length - 1
+                        newCondition = '' //Need this to make sure at correct point at end of the loop where it adds to i = ...
+console.log('foundGrouping PRE trimmed: ' + foundGrouping)
+//console.log('set foundChar to match: ' + foundChar)
+//console.log('This would extend to: ' + stringLogic.substring(i + foundChar + 1))
+                        foundGrouping = foundGrouping.trim()
+//console.log('foundGrouping trimmed: ' + foundGrouping)
+                        foundGrouping = foundGrouping.substring(1) //Remove opening parenthesis
+                        foundGrouping = foundGrouping.substring(0,foundGrouping.length - 1) //Remove opening parenthesis
+console.log('foundGrouping after removing parentheses: ' + foundGrouping)
+                        bool2 = evaluateString(valToMatch, foundGrouping)
+console.log('bool2 after the grouping logic: ' + bool2)
+console.log('****** RESULT ******')
+console.log('stringRemaining: ' + stringRemaining)
+console.log('foundGrouping: ' + foundGrouping)
+console.log('bool1: ' + bool1)
+console.log('prevCondition: ' + prevCondition)
+console.log('bool2: ' + bool2)
+                        if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
+console.log('FINAL RESULT: ' + bool1)
+console.log('****** END OF RESULT ******')
                     }
                 }
                 else
                 {
-                    if(newCondition == 'and' || newCondition == 'or')
+                    if(bool1 !== undefined)
                     {
-                        //Find the string that is before the operator to be used for comparison
-                        var string1 = stringRemaining.substring(0,foundChar).trim()
-console.log('string1 inside: ' + string1)
-                        //Set boolean 1
-                        bool1 = findString(valToMatch, string1)
+                        //Likely right after group parenthesis logic and need to skip ahead one more condition
+                        //Won't do anything this time around and wait for it to loop back around
+console.log('SKIPPING AHEAD as likley just finished group logic and needs to pickup the next operator or parenthesis')
                     }
                     else
                     {
-                        console.log("PARENTHESES I THINK...")
+                        if(newCondition == 'and' || newCondition == 'or')
+                        {
+                            //Find the string that is before the operator to be used for comparison
+                            var string1 = stringRemaining.substring(0,foundChar).trim()
+                            //Set boolean 1
+                            bool1 = findString(valToMatch, string1)
+console.log('****** RESULT ******')
+console.log('FIRST BOOLEAN ONLY... STARTING')
+console.log('stringRemaining: ' + stringRemaining)
+console.log('Looked for string1: ' + string1)
+console.log('bool1: ' + bool1)
+console.log('prevCondition: ' + prevCondition)
+console.log('****** END OF RESULT ******')
+                        }
+                        else
+                        {
+                            console.log("STARTING with a PARENTHESES...")
+                            //Find the matching closing parenthesis
+                            var foundGrouping = findClosingPar(stringRemaining)
+                            foundChar = foundGrouping.length - 1
+                            newCondition = '' //Need this to make sure at correct point at end of the loop where it adds to i = ...
+    console.log('foundGrouping PRE trimmed: ' + foundGrouping)
+    //console.log('set foundChar to match: ' + foundChar)
+    //console.log('This would extend to: ' + stringLogic.substring(i + foundChar + 1))
+                            foundGrouping = foundGrouping.trim()
+    //console.log('foundGrouping trimmed: ' + foundGrouping)
+                            foundGrouping = foundGrouping.substring(1) //Remove opening parenthesis
+                            foundGrouping = foundGrouping.substring(0,foundGrouping.length - 1) //Remove opening parenthesis
+    console.log('foundGrouping after removing parentheses: ' + foundGrouping)
+                            bool1 = evaluateString(valToMatch, foundGrouping)
+    console.log('bool1 after the grouping logic: ' + bool1)
+console.log('****** RESULT ******')
+console.log('FIRST BOOLEAN ONLY... STARTING')
+console.log('stringRemaining: ' + stringRemaining)
+console.log('foundGrouping: ' + foundGrouping)
+console.log('bool1: ' + bool1)
+console.log('prevCondition: ' + prevCondition)
+console.log('****** END OF RESULT ******')
+                        }
                     }
                 }
 
                 prevCondition = newCondition
                 i = i + foundChar + newCondition.length
-console.log('string1 end: ' + string1)
-console.log('bool1 end: ' + bool1)
-console.log('string2: ' + string2)
-console.log('bool2: ' + bool2)
-console.log('end string char count: ' + i)
+//console.log('string1 end: ' + string1)
+console.log('bool1 bottom of loop: ' + bool1)
+//console.log('string2: ' + string2)
+console.log('bool2 bottom of loop: ' + bool2)
+//console.log('end string char count: ' + i)
             }
 
             return bool1
         }
 
+var rowVal = 'that time'
+var testLogic = 'this OR that OR other' //WORKING
+var rowVal = 'that time this man'
+var testLogic = 'this AND that AND other' //WORKING
+var rowVal = 'that time this man'
+var testLogic = 'this AND (that OR other)' //WORKING
+var rowVal = 'that time this man'
+var testLogic = 'this AND ((that AND other) OR (time AND man))' //WORKING
+var rowVal = 'that time this man'
+var testLogic = 'this AND ((that AND other) OR (times AND man))' //WORKING
+var rowVal = 'that time this man'
+var testLogic = '(that AND other) OR this OR ((times AND man) OR brutal)' //WORKING
+var rowVal = 'that time this man'
+var testLogic = '((that AND other) OR this OR ((times AND man) OR brutal)) AND nope'
 console.log(evaluateString(rowVal, testLogic))
 
 
@@ -294,14 +429,6 @@ console.log(evaluateString(rowVal, testLogic))
 
 
 
-
-        //Split string of filter criteria into array
-        function fSplitArray(filterString)
-        {
-            //console.log(filterString)
-            var addDelimiter = filterString.split("{(}").join("{||}{(}{||}").split("{)}").join("{||}{)}{||}").split("{blank}").join("{||}{blank}{||}").split("{not}").join("{||}{not}{||}").split("{and}").join("{||}{and}{||}").split("{or}").join("{||}{or}{||}")
-            return (addDelimiter.split('{||}'))
-        }
 
 
 
