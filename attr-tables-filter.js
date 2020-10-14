@@ -1,4 +1,5 @@
-//v0.3
+//v0.4
+    //Added "grouping" operator with {(} and {)} to allow for combo of and/or conditions
 //Github Gist: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec
 //DEMO on how to use: https://user-images.githubusercontent.com/64155612/95652671-9f198c80-0aa7-11eb-8f8e-bc08fe81b985.gif
     //Click the '---' in header row of attribute table (1st column)
@@ -17,7 +18,7 @@
   //Tweet: https://twitter.com/dvargas92495/status/1313897302201958401?s=20
 
 function filterAttr(evt){
-    //Get the sort button clicked by user to activate the filter
+    //Add the filter icons and activate this script when user clicks the --- of first col of first row (header)
     var clickedElem = evt.target
     var clickedElemTag = clickedElem.tagName
     if(clickedElemTag !== 'TH'){return}
@@ -146,6 +147,171 @@ function filterAttr(evt){
             curFilterIcon.style.marginLeft = '5px'
         }
 
+        //Adding functions to parse the filter logic
+fSplitArray = undefined
+fCompare = undefined
+fParseGroup = undefined
+
+var testLogic = 'this OR that OR other'
+var rowVal = 'that time'
+
+findString = undefined
+evaluateString = undefined
+
+var stringLogic = 'this OR that OR other'
+var valToMatch = 'that time'
+
+        //See whether the filter criteria matches / is found in the row being analyzed
+        function findString(valToMatch,findString)
+        {
+console.log('Checking if "' + findString + '" is found in "' + valToMatch + '"')
+            if(valToMatch.indexOf(findString) > -1) //case sensitive
+            {
+console.log('found it')
+                return true
+            }
+            else
+            {
+console.log('NOT found')
+                return false
+            }
+        }
+
+        function evaluateString(valToMatch, stringLogic)
+        {
+            valToMatch = valToMatch.toLowerCase()
+            stringLogic = stringLogic.toLowerCase()
+            var logicLength = stringLogic.length
+            var stringRemaining
+            var findOr
+            var findAnd
+            var findPar
+            var foundChar
+            var prevCondition = ''
+            var newCondition = ''
+            var bool1
+            var bool2
+
+            //Loop throught he string logic
+            for (var i = 0; i < logicLength; i++)
+            {
+console.log('Starting at: ' + i)
+                stringRemaining = stringLogic.substring(i)
+console.log('stringRemaining: ' + stringRemaining)
+                findOr = stringRemaining.indexOf(' or ')
+                findAnd = stringRemaining.indexOf(' and ')
+                findPar = stringRemaining.indexOf('(')
+console.log('findOr: ' + findOr)
+console.log('findAnd: ' + findAnd)
+console.log('findPar: ' + findPar)
+                if(findOr == -1 && findAnd == -1 && findPar == -1)
+                {
+                    //End of string logic
+                    foundChar = -1
+                    newCondition = ''
+                }
+                else if ((findPar < findOr || findOr == -1) && (findPar < findAnd || findAnd == -1) && findPar > -1)
+                {
+                    //Found a parenthesis group
+                    foundChar = findPar
+                    newCondition = '('
+                }
+                else if (findOr < findAnd || findAnd == -1)
+                {
+                    //Found OR condition
+                    foundChar = findOr
+                    newCondition = 'or'
+                }
+                else
+                {
+                    //Found AND condition
+                    foundChar = findAnd
+                    newCondition = 'and'
+                }
+console.log('foundChar: ' + foundChar)
+console.log('prevCondition: ' + prevCondition)
+console.log('newCondition: ' + newCondition)
+                if(prevCondition != '')
+                {
+                    //Finding boolean2
+                    if(newCondition == '')
+                    {
+                        //End of the logic string
+                        i = logicLength
+                        var string2 = stringRemaining.substring(0).trim()
+                        bool2 = findString(valToMatch, string2)
+                        if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
+                    }
+                    else if(newCondition == 'and' || newCondition == 'or')
+                    {
+                        //Find the string that is before the operator to be used for comparison
+                        var string2 = stringRemaining.substring(0,foundChar).trim()
+
+                        //Set boolean 2
+                        bool2 = findString(valToMatch, string2)
+
+                        if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
+                    }
+                    else
+                    {
+                        console.log("PARENTHESES I THINK...")
+                    }
+                }
+                else
+                {
+                    if(newCondition == 'and' || newCondition == 'or')
+                    {
+                        //Find the string that is before the operator to be used for comparison
+                        var string1 = stringRemaining.substring(0,foundChar).trim()
+console.log('string1 inside: ' + string1)
+                        //Set boolean 1
+                        bool1 = findString(valToMatch, string1)
+                    }
+                    else
+                    {
+                        console.log("PARENTHESES I THINK...")
+                    }
+                }
+
+                prevCondition = newCondition
+                i = i + foundChar + newCondition.length
+console.log('string1 end: ' + string1)
+console.log('bool1 end: ' + bool1)
+console.log('string2: ' + string2)
+console.log('bool2: ' + bool2)
+console.log('end string char count: ' + i)
+            }
+
+            return bool1
+        }
+
+console.log(evaluateString(rowVal, testLogic))
+
+
+
+
+
+
+
+
+
+        //Split string of filter criteria into array
+        function fSplitArray(filterString)
+        {
+            //console.log(filterString)
+            var addDelimiter = filterString.split("{(}").join("{||}{(}{||}").split("{)}").join("{||}{)}{||}").split("{blank}").join("{||}{blank}{||}").split("{not}").join("{||}{not}{||}").split("{and}").join("{||}{and}{||}").split("{or}").join("{||}{or}{||}")
+            return (addDelimiter.split('{||}'))
+        }
+
+
+
+
+
+
+
+
+
+
         //Looping through each column
         const filterArr = [];
 
@@ -180,7 +346,7 @@ function filterAttr(evt){
                     var eachFilterText = eachFilterTextOrig.toLowerCase()
 
                     //Replace the operators to put into query syntax form for the loop below
-                    var querySyntax = eachFilterText.split("{blank}").join("{||}{blank}{||}").split("{not}").join("{||}{not}{||}").split("{and}").join("{||}{and}{||}").split("{or}").join("{||}{or}{||}")
+                    var querySyntax = eachFilterText.split("{(}").join("{||}{(}{||}").split("{)}").join("{||}{)}{||}").split("{blank}").join("{||}{blank}{||}").split("{not}").join("{||}{not}{||}").split("{and}").join("{||}{and}{||}").split("{or}").join("{||}{or}{||}")
 
                     //Current row / col value in table to check against filter
                     var curCell = curRow.cells[itm]
@@ -189,6 +355,7 @@ function filterAttr(evt){
                     var queryArray = querySyntax.split('{||}')
                     var lastOperator = ''
                     var isNot = 0
+                    var isOpenGroup = 0
 
                     //Loop through each criteria to see if row qualifies
                     for(var ctr = 0; ctr < queryArray.length; ctr++)
