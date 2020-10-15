@@ -1,7 +1,6 @@
-//v0.4.2
-    //Added "grouping" operator with {(} and {)} to allow for combo of and/or conditions
+//v0.4.3
 //Github Gist: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec
-//DEMO on how to use: https://user-images.githubusercontent.com/64155612/95652671-9f198c80-0aa7-11eb-8f8e-bc08fe81b985.gif
+//DEMO on how to use:
     //Click the '---' in header row of attribute table (1st column)
     //Click a filter icon and start typing filter in input box above the table
     //CONDITIONS and "BLANK" cells
@@ -9,13 +8,27 @@
         //Add {and} to require multiple e.g., invoice {and} payment {and} {not} september
             //Notice on the last example i combined {and} with the {not} clause for the third term
         //Add {or} to find "either" criteria e.g., invoice {or} payment {or} purchase
-            //NOTE: You CANNOT combine {and} with {or} conditions
+            //NOTE: You CANNOT combine {and} with {or} conditions UNLESS you use {(} {)} parentheses groupings (see below)
         //TIP: For large attr-tables it may be a bit laggy since it updates filter with every keystroke.
-            //To speed it up, you can also enclose a search term in {search term} and it won't apply filter until the closing "}" is pressed
+            //To speed it up, you can add a ` "backtick" at any time and then just add another one when you want the filter to apply/update
 //MUST have David's Sorting Attribute Tables script installed
 //Details on David Vargas' Sorting Attribute Tables script:
   //Website: https://roam.davidvargas.me/extensions/attr-tables/
   //Tweet: https://twitter.com/dvargas92495/status/1313897302201958401?s=20
+
+//List of all "special" characters
+//` backtick --> allows user to type the filter without oninput applying filter afte revery keystroke (quicker on big tables)
+  //The logic is if several sets of them (open & close)... if 1, 3, 5, 7, 9, 11 (odd numbers) then it is "open" so stop oninput event until match/close
+//{a} --> AND condition
+//{o} --> OR condition
+//{n} --> NOT modifier
+//{b} --> BLANKS
+//{(} --> open parenthesis for grouping
+//{)} --> closed parenthesis for grouping
+
+//TBA - These 2 are not implemented yet
+    //{s} --> start date (hides anything before that date)
+    //{e} --> end date (hides anything after that date)
 
 function filterAttr(evt){
     //Add the filter icons and activate this script when user clicks the --- of first col of first row (header)
@@ -50,13 +63,14 @@ function filterAttr(evt){
     newInput.value = ''
     newInput.id = 'fbFilterInput'
     newInput.name = 'fbFilterInput'
-    newInput.style.cssText = 'width:150px;display:flex;color:black;caret-color:black'
+    newInput.style.cssText = 'width:400px;display:flex;color:black;caret-color:black'
+    newInput.setAttribute('data-filter-index', 1) //Default to the second column in case user clicks into inputbox before clicking filter
     newDiv.appendChild(newInput)
 
     //Create span that shows row count
     var filterRowCt = document.createElement("span")
     filterRowCt.id = 'filterRowCt'
-    filterRowCt.style.cssText = 'display:flex;color:yellow;'
+    filterRowCt.style.cssText = 'display:flex;color:yellow;margin-left:15px;margin-top:4px;'
     filterRowCt.textContent = ''
     newInput.parentNode.insertBefore(filterRowCt, newInput.nextSibling)
 
@@ -87,6 +101,7 @@ function filterAttr(evt){
         filterIcon.id = 'filter' + col
         filterIcon.setAttribute('data-filter-index', col)
         filterIcon.setAttribute('data-filter-value', '')
+        filterIcon.setAttribute('data-filter-name', curHeader.innerText)
 
         //Add onclick function to each filter icon
         filterIcon.onclick = function () {
@@ -101,14 +116,53 @@ function filterAttr(evt){
 
             //Get the current last filter for that column
             var curFilterVal = clickedElem.getAttribute('data-filter-value')
+
+            var foundDefault = false
+            if(curFilterVal == '')
+            {
+                //Get the roam-table parent element
+                var roamTableElem = newInput.parentElement.parentElement
+                var gettingParent = roamTableElem.parentElement.parentElement.parentElement.parentElement.parentElement
+                var getChildBlocks = gettingParent.nextElementSibling.getElementsByClassName('rm-block-text')
+                //Loop through each to set as default value for filters
+                for (var y = 0; y < getChildBlocks.length; y++)
+                {
+                    var textFromChild = getChildBlocks[y].innerText
+                    var foundColTitle = textFromChild.indexOf(':')
+                    if(foundColTitle > -1)
+                    {
+                        var colTitle = textFromChild.substring(0,foundColTitle)
+                        var defFilterVal = textFromChild.substring(foundColTitle + 1)
+                        console.log(colTitle)
+                        console.log(defFilterVal)
+                        var currentColName = clickedElem.getAttribute('data-filter-name')
+                        console.log(currentColName)
+                        if(colTitle == currentColName)
+                        {
+                            console.log("MATCHED")
+                            clickedElem.setAttribute('data-filter-value', defFilterVal)
+                            curFilterVal = defFilterVal
+                            foundDefault = true
+                        }
+                    }
+                }
+            }
+
             //Populate the input box with that previous filter
             newInput.value = curFilterVal
             newInput.focus()
             newInput.select()
+            if(foundDefault){newInput.dispatchEvent(new Event('input'));} //Forces the input event to apply the filter
         }
 
         filterIconParent.appendChild(filterIcon)
     }
+
+    //Add onclick to allow for cursor in textbox (since under the attribute table parent DIV, Roam blocks any access to selecting text)
+    newInput.onclick = function () {
+        this.focus()
+        this.setSelectionRange(this.selectionEnd,this.selectionEnd)
+    };
 
     //Add oninput function to the input box where user types their filter
     newInput.oninput = function () {
@@ -120,6 +174,9 @@ function filterAttr(evt){
 
         //if opened up an operator like {not} {or} {and} {blank}, do not run all the code below until you close it with } to speed up filtering
         if((inputTxtVal.split("{").length - 1) > (inputTxtVal.split("}").length - 1)){return}
+        //Do this again except with ` backtick which allows you to do it as long as you want while you have odd number of ` present
+        var backTickCtr = (inputTxtVal.match(/`/g) || []).length
+        if(backTickCtr % 2 == 1){return} //Check if odd number
 
         //Set the corresponding filter span data attribute to the value the user just typed in input box
         var curFilterIcon = document.getElementById("filter" + colIndexClicked)
@@ -147,40 +204,57 @@ function filterAttr(evt){
             curFilterIcon.style.marginLeft = '5px'
         }
 
-        //Adding functions to parse the filter logic
-fSplitArray = undefined
-fCompare = undefined
-fParseGroup = undefined
-
-var testLogic = 'this OR that OR other'
-var rowVal = 'that time'
-
-findString = undefined
-evaluateString = undefined
-
-var stringLogic = 'this OR that OR other'
-var valToMatch = 'that time'
-
-        //See whether the filter criteria matches / is found in the row being analyzed
-        function findString(valToMatch,findString)
+        //See whether the filter criteria matches ie. is found in the row being analyzed
+        function findString(valToMatch,stringToFind)
         {
-console.log('Checking if "' + findString + '" is found in "' + valToMatch + '"')
-            if(valToMatch.indexOf(findString) > -1) //case sensitive
+console.log('Checking if "' + stringToFind + '" is found in "' + valToMatch + '"')
+
+            //Handle {not} and {blank}
+                //NOTE: Later handle {start} and {end}
+            var isNot = false
+            var isBlank = false
+            if(stringToFind.indexOf('{not}') > -1){isNot = true}
+            if(stringToFind.indexOf('{blank}') > -1){isBlank = true}
+
+            if(isNot || isBlank)
+            {
+                stringToFind = stringToFind.replace(/{not}/g,"")
+                stringToFind = stringToFind.replace(/{blank}/g,"")
+                stringToFind = stringToFind.trim()
+            }
+
+            if(isBlank)
+            {
+                if(valToMatch == '')
+                {
+                    if(isNot){return false}else{return true}
+                }
+                else
+                {
+                    if(isNot){return true}else{return false}
+                }
+            }
+
+            if(valToMatch.indexOf(stringToFind) > -1) //case sensitive
             {
 console.log('found it')
-                return true
+                if(isNot){return false}else{return true}
             }
             else
             {
 console.log('NOT found')
-                return false
+                if(isNot){return true}else{return false}
             }
         }
 
+        //Find the closing bracket at the correct grouping level
         function findClosingPar(logicString)
         {
 console.log('Finding the location of closing parenthesis in "' + logicString + '"')
             logicStringTrimmed = logicString.trim()
+            var openPar = '{(}'
+            var closedPar = '{)}'
+            var numOfChar = 3;
             var trimAmount = logicString.length - logicStringTrimmed.length
 //console.log('trimAmount: ' + trimAmount)
             var startLen = logicStringTrimmed.length
@@ -190,14 +264,14 @@ console.log('Finding the location of closing parenthesis in "' + logicString + '
             for (var i = 0; i < startLen; i++)
             {
 //console.log('char# ' + i + ' - ' + logicStringTrimmed.substring(i,i+1))
-                if(logicStringTrimmed.substring(i,i+1) == '(')
+                if(logicStringTrimmed.substring(i,i + numOfChar) == openPar)
                 {
                     //Found open parenthesis
                     foundOpen++
                 }
                 else
                 {
-                    if(logicStringTrimmed.substring(i,i+1) == ')')
+                    if(logicStringTrimmed.substring(i,i + numOfChar) == closedPar)
                     {
                         //Found close parenthesis
                         foundClose++
@@ -209,12 +283,13 @@ console.log('Finding the location of closing parenthesis in "' + logicString + '
                 {
                     //Found closing / matching parentheses
 console.log('found the closing parenthesis at char: ' + i)
-console.log('The entire group is: ' + logicStringTrimmed.substring(0,i+1))
-                    return logicString.substring(0,i+1+trimAmount)
+console.log('The entire group is: ' + logicStringTrimmed.substring(0,i + numOfChar))
+                    return logicString.substring(0,i + numOfChar + trimAmount)
                 }
             }
         }
 
+        //Adding functions to parse the filter logic
         function evaluateString(valToMatch, stringLogic)
         {
             valToMatch = valToMatch.toLowerCase()
@@ -231,7 +306,7 @@ console.log('The entire group is: ' + logicStringTrimmed.substring(0,i+1))
             var bool2
             var loopCtr = 0
 
-            //Loop throught he string logic
+            //Loop throught the string logic
             for (var i = 0; i < logicLength; i++)
             {
                 loopCtr++
@@ -243,9 +318,9 @@ console.log('The entire group is: ' + logicStringTrimmed.substring(0,i+1))
 console.log('Starting at: ' + i)
                 stringRemaining = stringLogic.substring(i)
 console.log('stringRemaining: ' + stringRemaining)
-                findOr = stringRemaining.indexOf(' or ')
-                findAnd = stringRemaining.indexOf(' and ')
-                findPar = stringRemaining.indexOf('(')
+                findOr = stringRemaining.indexOf('{or}')
+                findAnd = stringRemaining.indexOf('{and}')
+                findPar = stringRemaining.indexOf('{(}')
 console.log('findOr: ' + findOr)
 console.log('findAnd: ' + findAnd)
 console.log('findPar: ' + findPar)
@@ -326,8 +401,8 @@ console.log('foundGrouping PRE trimmed: ' + foundGrouping)
 //console.log('This would extend to: ' + stringLogic.substring(i + foundChar + 1))
                         foundGrouping = foundGrouping.trim()
 //console.log('foundGrouping trimmed: ' + foundGrouping)
-                        foundGrouping = foundGrouping.substring(1) //Remove opening parenthesis
-                        foundGrouping = foundGrouping.substring(0,foundGrouping.length - 1) //Remove opening parenthesis
+                        foundGrouping = foundGrouping.substring(3) //Remove opening parenthesis
+                        foundGrouping = foundGrouping.substring(0,foundGrouping.length - 3) //Remove opening parenthesis
 console.log('foundGrouping after removing parentheses: ' + foundGrouping)
                         bool2 = evaluateString(valToMatch, foundGrouping)
 console.log('bool2 after the grouping logic: ' + bool2)
@@ -366,7 +441,7 @@ console.log('bool1: ' + bool1)
 console.log('prevCondition: ' + prevCondition)
 console.log('****** END OF RESULT ******')
                         }
-                        else
+                        else if(newCondition == '(')
                         {
                             console.log("STARTING with a PARENTHESES...")
                             //Find the matching closing parenthesis
@@ -378,8 +453,8 @@ console.log('****** END OF RESULT ******')
     //console.log('This would extend to: ' + stringLogic.substring(i + foundChar + 1))
                             foundGrouping = foundGrouping.trim()
     //console.log('foundGrouping trimmed: ' + foundGrouping)
-                            foundGrouping = foundGrouping.substring(1) //Remove opening parenthesis
-                            foundGrouping = foundGrouping.substring(0,foundGrouping.length - 1) //Remove opening parenthesis
+                            foundGrouping = foundGrouping.substring(3) //Remove opening parenthesis
+                            foundGrouping = foundGrouping.substring(0,foundGrouping.length - 3) //Remove opening parenthesis
     console.log('foundGrouping after removing parentheses: ' + foundGrouping)
                             bool1 = evaluateString(valToMatch, foundGrouping)
     console.log('bool1 after the grouping logic: ' + bool1)
@@ -391,11 +466,18 @@ console.log('bool1: ' + bool1)
 console.log('prevCondition: ' + prevCondition)
 console.log('****** END OF RESULT ******')
                         }
+                        else
+                        {
+                            //Likely just the start of filter and user is just starting to type a few letters to start filtering
+                            var string1 = stringRemaining.substring(0).trim()
+                            //Set boolean 1
+                            bool1 = findString(valToMatch, string1)
+                        }
                     }
                 }
 
                 prevCondition = newCondition
-                i = i + foundChar + newCondition.length
+                i = i + foundChar + newCondition.length + 1 //Add +1 due to the curly brackets around the condition modifiers
 //console.log('string1 end: ' + string1)
 console.log('bool1 bottom of loop: ' + bool1)
 //console.log('string2: ' + string2)
@@ -405,39 +487,6 @@ console.log('bool2 bottom of loop: ' + bool2)
 
             return bool1
         }
-
-var rowVal = 'that time'
-var testLogic = 'this OR that OR other' //WORKING
-var rowVal = 'that time this man'
-var testLogic = 'this AND that AND other' //WORKING
-var rowVal = 'that time this man'
-var testLogic = 'this AND (that OR other)' //WORKING
-var rowVal = 'that time this man'
-var testLogic = 'this AND ((that AND other) OR (time AND man))' //WORKING
-var rowVal = 'that time this man'
-var testLogic = 'this AND ((that AND other) OR (times AND man))' //WORKING
-var rowVal = 'that time this man'
-var testLogic = '(that AND other) OR this OR ((times AND man) OR brutal)' //WORKING
-var rowVal = 'that time this man'
-var testLogic = '((that AND other) OR this OR ((times AND man) OR brutal)) AND nope'
-console.log(evaluateString(rowVal, testLogic))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         //Looping through each column
         const filterArr = [];
@@ -462,133 +511,47 @@ console.log(evaluateString(rowVal, testLogic))
 
             //Start by showing each row and then filter with each column below
             curRow.style.display = "table-row"
-            var hideRow = 0
+            var showRow = true
+
             for (itm = 0; itm < filterArr.length; itm++)
             {
+                //Loop through each column that is filtered
                 var eachFilterElem = filterArr[itm]
                 if(eachFilterElem !== '')
                 {
                     //Col filter value
-                    var eachFilterTextOrig = eachFilterElem.toString()
-                    var eachFilterText = eachFilterTextOrig.toLowerCase()
+                    var eachFilterText = eachFilterElem.toString().toLowerCase()
 
-                    //Replace the operators to put into query syntax form for the loop below
-                    var querySyntax = eachFilterText.split("{(}").join("{||}{(}{||}").split("{)}").join("{||}{)}{||}").split("{blank}").join("{||}{blank}{||}").split("{not}").join("{||}{not}{||}").split("{and}").join("{||}{and}{||}").split("{or}").join("{||}{or}{||}")
+                    //At top of file you will see section: List of all "special" characters
+                        //Look there for details on the special characters available
+                    var filterLogic = eachFilterText.replace(/`/g,"") //Remove back ticks in case user used them to pause the oninput event updating after each letter
+                    filterLogic = filterLogic.replace(/{a}/g,"{and}")
+                    filterLogic = filterLogic.replace(/{o}/g,"{or}")
+                    filterLogic = filterLogic.replace(/{n}/g,"{not}")
+                    filterLogic = filterLogic.replace(/{b}/g,"{blank}")
+                    filterLogic = filterLogic.replace(/{s}/g,"{start}")
+                    filterLogic = filterLogic.replace(/{e}/g,"{end}")
 
                     //Current row / col value in table to check against filter
                     var curCell = curRow.cells[itm]
                     var curValue = curCell.innerText
                     var curElemText = curValue.toString().toLowerCase()
-                    var queryArray = querySyntax.split('{||}')
-                    var lastOperator = ''
-                    var isNot = 0
-                    var isOpenGroup = 0
 
-                    //Loop through each criteria to see if row qualifies
-                    for(var ctr = 0; ctr < queryArray.length; ctr++)
-                    {
-                        var eachArrVal = queryArray[ctr].trim()
-                        if(eachArrVal != '')
-                        {
-                            if(eachArrVal == '{not}'){isNot = 1}
-                            if(eachArrVal == '{and}'){lastOperator = 'and'}
-                            if(eachArrVal == '{or}'){lastOperator = 'or'}
-
-                            if(eachArrVal != '{not}' && eachArrVal != '{and}' && eachArrVal != '{or}' && eachArrVal != '{blank}')
-                            {
-                                //Clean out / remove the leading and trailing {SEARCH TERM} around a search
-                                eachArrVal = eachArrVal.split("{").join("").split("}").join("")
-                            }
-
-                            if(eachArrVal != '{not}' && eachArrVal != '{and}' && eachArrVal != '{or}')
-                            {
-                                if(lastOperator == '' && isNot == 0)
-                                {
-                                    //No operators so just simply filter for this value
-                                    switch(eachArrVal)
-                                    {
-                                        case '{blank}':
-                                            if(curElemText != '')
-                                            {
-                                                hideRow = 1
-                                            }else{hideRow = -1}
-                                            break;
-                                        default:
-                                            if(curElemText.indexOf(eachArrVal) == -1)
-                                            {
-                                                hideRow = 1
-                                            }else{hideRow = -1}
-                                    }
-                                }
-                                else
-                                {
-                                    if(isNot == 1)
-                                    {
-                                        //NOT clause is activated so look for inverse of search term
-                                        isNot = 0
-                                        if(lastOperator != 'or')
-                                        {
-                                            //Looking to exclude/hide row if matches this value
-                                            if((curElemText.indexOf(eachArrVal) > -1 && eachArrVal != '{blank}') || (eachArrVal == '{blank}' && curElemText == ''))
-                                            {
-                                                hideRow = 1
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //OR clause means show the row if found this time because may have been hidden from the first or clause
-                                            if((curElemText.indexOf(eachArrVal) == -1 && eachArrVal != '{blank}') || (eachArrVal == '{blank}' && curElemText != ''))
-                                            {
-                                                //Using -1 to account for situation where any can be satisfied with OR
-                                                hideRow = -1
-                                            }
-                                            else
-                                            {
-                                                if(hideRow == 0){hideRow = 1}
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //NOT clause is not activated
-                                        if(lastOperator != 'or')
-                                        {
-                                            //Looking to exclude/hide row if does not match this
-                                            if(curElemText.indexOf(eachArrVal) == -1 || (eachArrVal == '{blank}' && curElemText != ''))
-                                            {
-                                                hideRow = 1
-                                            }
-                                        }
-                                        else
-                                        {
-                                            //OR clause means show the row if found this time because may have been hidden from the first or clause
-                                            if((curElemText.indexOf(eachArrVal) > -1 && eachArrVal != '{blank}') || (eachArrVal == '{blank}' && curElemText == ''))
-                                            {
-                                                //Using -1 to account for situation where any can be satisfied with OR
-                                                hideRow = -1
-                                            }
-                                            else
-                                            {
-                                                if(hideRow == 0){hideRow = 1}
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    //Run the function to parse through all the logic including nested groupings (parentheses)
+                    showRow = evaluateString(curElemText, filterLogic)
                 }
                 else
                 {
                     //No filter entered for this column
                 }
-                if(hideRow == 1)
+
+                if(showRow == false)
                 {
                     curRow.style.display = "none"
                     break
                 }
             }
-            if(hideRow != 1){rowCtr = rowCtr + 1}
+            if(showRow != false){rowCtr = rowCtr + 1}
         }
         var filterRowCt = document.getElementById("filterRowCt")
         filterRowCt.textContent = 'Results: ' + rowCtr
