@@ -1,4 +1,4 @@
-//v0.4.3
+//v0.4.4
 //Github Gist: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec
 //DEMO on how to use:
     //Click the '---' in header row of attribute table (1st column)
@@ -63,6 +63,7 @@ function filterAttr(evt){
     newInput.value = ''
     newInput.id = 'fbFilterInput'
     newInput.name = 'fbFilterInput'
+    newInput.autocomplete = 'off'
     newInput.style.cssText = 'width:400px;display:flex;color:black;caret-color:black'
     newInput.setAttribute('data-filter-index', 1) //Default to the second column in case user clicks into inputbox before clicking filter
     newDiv.appendChild(newInput)
@@ -204,23 +205,82 @@ function filterAttr(evt){
             curFilterIcon.style.marginLeft = '5px'
         }
 
+        //Convert string to date
+        function convertToDate(dateString) {
+            var origDateString = dateString
+            var newDateString = origDateString.trim().split("[").join("").split("]").join("").replace("#","")
+            newDateString = newDateString.replace("st,",",").replace("rd,",",").replace("th,",",").replace("nd,",",")
+            var foundDate = Date.parse(newDateString)
+            return foundDate
+        }
+
         //See whether the filter criteria matches ie. is found in the row being analyzed
         function findString(valToMatch,stringToFind)
         {
 console.log('Checking if "' + stringToFind + '" is found in "' + valToMatch + '"')
 
             //Handle {not} and {blank}
-                //NOTE: Later handle {start} and {end}
             var isNot = false
             var isBlank = false
             if(stringToFind.indexOf('{not}') > -1){isNot = true}
             if(stringToFind.indexOf('{blank}') > -1){isBlank = true}
+            //Handle {start} and {end} and {date}
+            var isStart = false
+            var isEnd = false
+            var isDate = false
+            if(stringToFind.indexOf('{start}') > -1){isStart = true}
+            if(stringToFind.indexOf('{end}') > -1){isEnd = true}
+            if(stringToFind.indexOf('{date}') > -1){isDate = true}
 
             if(isNot || isBlank)
             {
                 stringToFind = stringToFind.replace(/{not}/g,"")
                 stringToFind = stringToFind.replace(/{blank}/g,"")
                 stringToFind = stringToFind.trim()
+            }
+
+            if(isStart || isEnd || isDate)
+            {
+                stringToFind = stringToFind.replace(/{start}/g,"")
+                stringToFind = stringToFind.replace(/{end}/g,"")
+                stringToFind = stringToFind.replace(/{date}/g,"")
+                stringToFind = stringToFind.trim()
+
+                //convert valToMatch to date
+                var valMatchDate = convertToDate(valToMatch.trim())
+                var stringToFindDate = convertToDate(stringToFind)
+
+                if(isStart)
+                {
+                    if(valMatchDate > stringToFindDate) //Found date after filter criteria
+                    {
+                        if(isNot){return false}else{return true}
+                    }
+                    else
+                    {
+                        if(isNot){return true}else{return false}
+                    }
+                }
+                else if (isEnd) {
+                    if(valMatchDate < stringToFindDate) //Found date before filter criteria
+                    {
+                        if(isNot){return false}else{return true}
+                    }
+                    else
+                    {
+                        if(isNot){return true}else{return false}
+                    }
+                }
+                else {
+                    if(valMatchDate == stringToFindDate) //Found date exactly as entered
+                    {
+                        if(isNot){return false}else{return true}
+                    }
+                    else
+                    {
+                        if(isNot){return true}else{return false}
+                    }
+                }
             }
 
             if(isBlank)
@@ -469,9 +529,11 @@ console.log('****** END OF RESULT ******')
                         else
                         {
                             //Likely just the start of filter and user is just starting to type a few letters to start filtering
+                                //Or just simply looking for a single filter criteria
                             var string1 = stringRemaining.substring(0).trim()
                             //Set boolean 1
                             bool1 = findString(valToMatch, string1)
+                            return bool1
                         }
                     }
                 }
@@ -531,6 +593,7 @@ console.log('bool2 bottom of loop: ' + bool2)
                     filterLogic = filterLogic.replace(/{b}/g,"{blank}")
                     filterLogic = filterLogic.replace(/{s}/g,"{start}")
                     filterLogic = filterLogic.replace(/{e}/g,"{end}")
+                    filterLogic = filterLogic.replace(/{d}/g,"{date}")
 
                     //Current row / col value in table to check against filter
                     var curCell = curRow.cells[itm]
