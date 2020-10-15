@@ -1,4 +1,4 @@
-//v0.4.4
+//v0.4.5
 //Github Gist: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec
 //DEMO on how to use:
     //Click the '---' in header row of attribute table (1st column)
@@ -210,8 +210,90 @@ function filterAttr(evt){
             var origDateString = dateString
             var newDateString = origDateString.trim().split("[").join("").split("]").join("").replace("#","")
             newDateString = newDateString.replace("st,",",").replace("rd,",",").replace("th,",",").replace("nd,",",")
-            var foundDate = Date.parse(newDateString)
+
+            //Some natural language options I built in
+            const phToday = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
+            const phTomorrow = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()+1)
+            const phNextWeek = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()+7)
+            const phNextMonth = new Date(new Date().getFullYear(),new Date().getMonth()+1, new Date().getDate())
+            const phNextYear = new Date(new Date().getFullYear()+1,new Date().getMonth(), new Date().getDate())
+            const phYesterday = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()-1)
+            const phLastWeek = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate()-7)
+            const phLastMonth = new Date(new Date().getFullYear(),new Date().getMonth()-1, new Date().getDate())
+            const phLastYear = new Date(new Date().getFullYear()-1,new Date().getMonth(), new Date().getDate())
+
+            var foundDate
+
+            switch(newDateString)
+            {
+                case 'today':
+                    foundDate = Date.parse(phToday)
+                    break;
+                case 'tomorrow':
+                    foundDate = Date.parse(phTomorrow)
+                    break;
+                case 'next week':
+                    foundDate = Date.parse(phNextWeek)
+                    break;
+                case 'next month':
+                    foundDate = Date.parse(phNextMonth)
+                    break;
+                case 'next year':
+                    foundDate = Date.parse(phNextYear)
+                    break;
+                case 'yesterday':
+                    foundDate = Date.parse(phYesterday)
+                    break;
+                case 'last week':
+                    foundDate = Date.parse(phLastWeek)
+                    break;
+                case 'last month':
+                    foundDate = Date.parse(phLastMonth)
+                    break;
+                case 'last year':
+                    foundDate = Date.parse(phLastYear)
+                    break;
+                default:
+                    foundDate = Date.parse(newDateString)
+                    if(isNaN(foundDate))
+                    {
+                        if(newDateString.indexOf('days ago') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()-parseInt(newDateString)); break;}
+                        if(newDateString.indexOf('day ago') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()-parseInt(newDateString)); break;}
+                        if(newDateString.indexOf('weeks ago') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()-(parseInt(newDateString)*7)); break;}
+                        if(newDateString.indexOf('week ago') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()-(parseInt(newDateString)*7)); break;}
+                        if(newDateString.indexOf('months ago') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth()-parseInt(newDateString), new Date().getDate()); break;}
+                        if(newDateString.indexOf('month ago') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth()-parseInt(newDateString), new Date().getDate()); break;}
+                        if(newDateString.indexOf('years ago') > -1){foundDate = new Date(new Date().getFullYear()-parseInt(newDateString),new Date().getMonth(), new Date().getDate()); break;}
+                        if(newDateString.indexOf('year ago') > -1){foundDate = new Date(new Date().getFullYear()-parseInt(newDateString),new Date().getMonth(), new Date().getDate()); break;}
+                        if(newDateString.indexOf('days from now') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+parseInt(newDateString)); break;}
+                        if(newDateString.indexOf('day from now') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+parseInt(newDateString)); break;}
+                        if(newDateString.indexOf('weeks from now') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+(parseInt(newDateString)*7)); break;}
+                        if(newDateString.indexOf('week from now') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+(parseInt(newDateString)*7)); break;}
+                        if(newDateString.indexOf('months from now') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth()+parseInt(newDateString), new Date().getDate()); break;}
+                        if(newDateString.indexOf('month from now') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth()+parseInt(newDateString), new Date().getDate()); break;}
+                        if(newDateString.indexOf('years from now') > -1){foundDate = new Date(new Date().getFullYear()+parseInt(newDateString),new Date().getMonth(), new Date().getDate()); break;}
+                        if(newDateString.indexOf('year from now') > -1){foundDate = new Date(new Date().getFullYear()+parseInt(newDateString),new Date().getMonth(), new Date().getDate()); break;}
+                        if(newDateString.indexOf('days from today') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+parseInt(newDateString)); break;}
+                        if(newDateString.indexOf('weeks from today') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+(parseInt(newDateString)*7)); break;}
+                        if(newDateString.indexOf('months from today') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth()+parseInt(newDateString), new Date().getDate()); break;}
+                        if(newDateString.indexOf('years from today') > -1){foundDate = new Date(new Date().getFullYear()+parseInt(newDateString),new Date().getMonth(), new Date().getDate()); break;}
+                        if(newDateString.indexOf('day from today') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+parseInt(newDateString)); break;}
+                        if(newDateString.indexOf('week from today') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth(), new Date().getDate()+(parseInt(newDateString)*7)); break;}
+                        if(newDateString.indexOf('month from today') > -1){foundDate = new Date(new Date().getFullYear(),new Date().getMonth()+parseInt(newDateString), new Date().getDate()); break;}
+                        if(newDateString.indexOf('year from today') > -1){foundDate = new Date(new Date().getFullYear()+parseInt(newDateString),new Date().getMonth(), new Date().getDate()); break;}
+                    }
+            }
+
             return foundDate
+        }
+
+        //Convert string to date
+        function convertToNumber(numString) {
+            if(numString == "" || numString == null || numString == undefined){return -99}
+            var origNumString = numString
+            var newNumString = origNumString.trim().split(",").join("").split("$").join("").trim()
+            var foundNum = parseFloat(newNumString)
+            if(isNaN(foundNum)){return -99}else{return foundNum}
         }
 
         //See whether the filter criteria matches ie. is found in the row being analyzed
@@ -565,6 +647,11 @@ console.log('bool2 bottom of loop: ' + bool2)
             }
         }
 
+        var aggSum = 0
+        var aggMin = -99
+        var aggMax = 0
+        var aggAvg = 0
+        var aggAvgCtr = 0
         var rowCtr = 0
         for(var i = 1; i < tableRows.length; i++) //Skip header row starting with 1 instead of 0
         {
@@ -613,11 +700,30 @@ console.log('bool2 bottom of loop: ' + bool2)
                     curRow.style.display = "none"
                     break
                 }
+                else
+                {
+                    if(colIndexClicked == itm)
+                    {
+                        //This is the column filter clicked so calculate sum, min, max, average
+                        var foundNumber = convertToNumber(curElemText)
+                    }
+                }
             }
-            if(showRow != false){rowCtr = rowCtr + 1}
+            if(showRow != false)
+            {
+                rowCtr = rowCtr + 1
+                if(foundNumber != -99)
+                {
+                    aggAvgCtr = aggAvgCtr + 1
+                    aggSum = aggSum + foundNumber
+                    if(foundNumber > aggMax){aggMax = foundNumber}
+                    if(foundNumber < aggMin || aggMin == -99){aggMin = foundNumber}
+                    aggAvg = aggSum / aggAvgCtr
+                }
+            }
         }
         var filterRowCt = document.getElementById("filterRowCt")
-        filterRowCt.textContent = 'Results: ' + rowCtr
+        filterRowCt.textContent = 'Rows: ' + rowCtr + ' | Sum: ' + aggSum.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Avg: ' + aggAvg.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Max: ' + aggMax.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Min: ' + aggMin.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
     };
 }
 
