@@ -25,7 +25,7 @@ Each section below outlines details for each script that can be installed in Roa
   - ![image](https://user-images.githubusercontent.com/64155612/99346592-ceab7980-2849-11eb-807b-213dba4b3f78.png)
 - MUST have David's Sorting Attribute Tables script installed (see below)
   - Details on David Vargas' Sorting Attribute Tables script:
-    - Website: https://roamjs.com/docs/extensions/attr-tables/
+    - Website: https://roamjs.com/docs/extensions/attr-tables
     - Tweet: https://twitter.com/dvargas92495/status/1313897302201958401?s=20
   - The script now auto installs David's if it isn't already present
 - List of all "special" characters
