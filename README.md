@@ -20,7 +20,8 @@ Each section below outlines details for each script that can be installed in Roa
 ### Description
 
 - Detailed Instructions can be found below in the Demo section
-- To activate filtering, click the '---' in header row of attribute table (1st column)
+- To activate filtering, click the `---` in header row of attribute table (1st column)
+  - ![image](https://user-images.githubusercontent.com/64155612/99346592-ceab7980-2849-11eb-807b-213dba4b3f78.png)
 - MUST have David's Sorting Attribute Tables script installed (see below)
   - Details on David Vargas' Sorting Attribute Tables script:
     - Website: https://roamjs.com/extensions/attr-tables/
@@ -46,19 +47,20 @@ Each section below outlines details for each script that can be installed in Roa
 To install, do the same thing you do for any roam/js script.
 
 1. Create page in Roam (if not already present) called `[[roam/js]]`
-2. Create a new block on this page and enter: `{{[[roam/js]]}}`
-3. Nest under that block a `Code Block`
-4. Make sure the code language is set as `JavaScript`
-5. Paste the following into the new `Code Block`
-
+2. If you previously installed this script by copying from a GitHub Gist, remove it from `[[roam/js]]` now.
+3. Create a new block on this page and enter: `{{[[roam/js]]}}`
+4. Nest under that block a `Code Block`
+5. Make sure the code language is set as `JavaScript`
+6. Paste the following into the new `Code Block`
+```
 var s = document.createElement("script");
 s.type = "text/javascript";
 s.src = "https://gitmurf.github.io/roam-javascript/attr-tables-filter.js";
 document.getElementsByTagName("head")[0].appendChild(s);
-
-6. A warning box shows up asking you to review the risks of using roam/js.
-7. Once you have reviewed the warning and understand/accept the risk, click Yes.
-8. Refresh Roam and the script should now be installed!
+```
+7. A warning box shows up asking you to review the risks of using roam/js.
+8. Once you have reviewed the warning and understand/accept the risk, click Yes.
+9. Refresh Roam and the script should now be installed!
 
 ### Demo
 
