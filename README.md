@@ -82,9 +82,7 @@ document.getElementsByTagName("head")[0].appendChild(s);
 
 ### Ideas Backlog
 
-- Create a custom function to parse the number values for aggregation to add thousands separators.
-  - The advanced regex I had working doesn't work on all browsers and definitely doesn't work on ipad.
-  - Likely the regex doesn't work on any safari based browser.
+I am keeping track of new ideas here: [Attribute Table Filters - Backlog of Ideas / Features · Issue #5 · GitMurf/roam-javascript](https://github.com/GitMurf/roam-javascript/issues/5)
 
 ### Change Log
 
