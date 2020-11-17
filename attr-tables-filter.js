@@ -1,34 +1,48 @@
-//v0.4.5
+//v0.5
+    //Version Notes: Merged Gist back to GitHub Repo to host via GitHub Pages moving forward
 //Github Gist: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec
-//DEMO on how to use:
-    //Click the '---' in header row of attribute table (1st column)
-    //Click a filter icon and start typing filter in input box above the table
-    //CONDITIONS and "BLANK" cells
-        //Add {not} before any search term to exclude the term e.g., {not}invoice
-        //Add {and} to require multiple e.g., invoice {and} payment {and} {not} september
-            //Notice on the last example i combined {and} with the {not} clause for the third term
-        //Add {or} to find "either" criteria e.g., invoice {or} payment {or} purchase
-            //NOTE: You CANNOT combine {and} with {or} conditions UNLESS you use {(} {)} parentheses groupings (see below)
-        //TIP: For large attr-tables it may be a bit laggy since it updates filter with every keystroke.
-            //To speed it up, you can add a ` "backtick" at any time and then just add another one when you want the filter to apply/update
-//MUST have David's Sorting Attribute Tables script installed
-//Details on David Vargas' Sorting Attribute Tables script:
-  //Website: https://roam.davidvargas.me/extensions/attr-tables/
-  //Tweet: https://twitter.com/dvargas92495/status/1313897302201958401?s=20
+//DEMO on how to use: https://user-images.githubusercontent.com/64155612/96104315-8cc79600-0e8d-11eb-9c68-bf930d041054.gif
+//Instructions and Updates in Comments here: https://gist.github.com/GitMurf/aece9f105628640cb79925d1310449ec#partial-timeline-marker
+
+//To activate, Click the '---' in header row of attribute table (1st column)
+
+//MUST have David's Sorting Attribute Tables script installed (see below)
+    //Details on David Vargas' Sorting Attribute Tables script:
+      //Website: https://roamjs.com/extensions/attr-tables/
+      //Tweet: https://twitter.com/dvargas92495/status/1313897302201958401?s=20
+
+//This installs David's script if it isn't already installed
+//Shawn added prelim check if already present
+var checkScript = document.getElementById("attr-tables");
+if(!checkScript)
+{
+    // David's Code
+    var old = document.getElementById("attr-tables");
+    if (old) {
+        old.remove();
+    }
+
+    var s = document.createElement("script");
+    s.src = "https://roamjs.com/attr-tables.js";
+    s.id = "attr-tables";
+    s.async = false;
+    s.type = "text/javascript";
+    document.getElementsByTagName("head")[0].appendChild(s);
+}
 
 //List of all "special" characters
-//` backtick --> allows user to type the filter without oninput applying filter afte revery keystroke (quicker on big tables)
-  //The logic is if several sets of them (open & close)... if 1, 3, 5, 7, 9, 11 (odd numbers) then it is "open" so stop oninput event until match/close
+//` backtick --> allows user to type the filter without oninput applying filter after every keystroke (quicker on big tables)
 //{a} --> AND condition
 //{o} --> OR condition
 //{n} --> NOT modifier
 //{b} --> BLANKS
 //{(} --> open parenthesis for grouping
 //{)} --> closed parenthesis for grouping
-
-//TBA - These 2 are not implemented yet
-    //{s} --> start date (hides anything before that date)
-    //{e} --> end date (hides anything after that date)
+//{s} --> start date (hides anything before that date)
+//{e} --> end date (hides anything after that date)
+//{d} --> match a single date
+//{t} --> look for TODO item
+//{done} --> look for DONE item
 
 function filterAttr(evt){
     //Add the filter icons and activate this script when user clicks the --- of first col of first row (header)
@@ -65,7 +79,7 @@ function filterAttr(evt){
     newInput.name = 'fbFilterInput'
     newInput.autocomplete = 'off'
     newInput.style.cssText = 'width:400px;display:flex;color:black;caret-color:black'
-    newInput.setAttribute('data-filter-index', 1) //Default to the second column in case user clicks into inputbox before clicking filter
+    newInput.setAttribute('data-filter-index', 1) //Default to the second column in case user clicks into inputBox before clicking filter
     newDiv.appendChild(newInput)
 
     //Create span that shows row count
@@ -135,7 +149,7 @@ function filterAttr(evt){
                         var colTitle = textFromChild.substring(0,foundColTitle)
                         var defFilterVal = textFromChild.substring(foundColTitle + 1)
                         var currentColName = clickedElem.getAttribute('data-filter-name')
-                        if(colTitle == currentColName)
+                        if(colTitle.toLowerCase() == currentColName.toLowerCase() || (currentColName.match(/\([1-9]\)/) && currentColName.toLowerCase().startsWith(colTitle.toLowerCase())))
                         {
                             clickedElem.setAttribute('data-filter-value', defFilterVal)
                             curFilterVal = defFilterVal
@@ -283,7 +297,7 @@ function filterAttr(evt){
             return foundDate
         }
 
-        //Convert string to date
+        //Convert string to number
         function convertToNumber(numString) {
             if(numString == "" || numString == null || numString == undefined){return -99}
             var origNumString = numString
@@ -381,6 +395,51 @@ function filterAttr(evt){
             }
         }
 
+        function checkIfTodo(stringToFind,isCheckbox,isDone)
+        {
+            var isNot = false
+            if(stringToFind.indexOf('{not}') > -1){isNot = true}
+            if(isCheckbox)
+            {
+                //Cell value is a checkbox
+                if(isDone)
+                {
+                    //Checkbox is DONE
+                    if(stringToFind.indexOf('{done}') > -1)
+                    {
+                        //Filter is for DONE
+                        if(isNot){return false}else{return true}
+                    }
+                    else
+                    {
+                        //Filter is for TODO
+                        if(isNot){return true}else{return false}
+                    }
+                }
+                else
+                {
+                    //Checkbox is NOT done so it is a TODO
+                    if(stringToFind.indexOf('{done}') > -1)
+                    {
+                        //Filter is for DONE
+                        if(isNot){return true}else{return false}
+                    }
+                    else
+                    {
+                        //Filter is for TODO
+                        if(isNot){return false}else{return true}
+                    }
+                }
+            }
+            else
+            {
+                //Cell value is NOT a checkbox
+                if(isNot){return true}else{return false}
+            }
+
+            return false //shouldn't get here but this is a fallback
+        }
+
         //Find the closing bracket at the correct grouping level
         function findClosingPar(logicString)
         {
@@ -417,10 +476,20 @@ function filterAttr(evt){
         }
 
         //Adding functions to parse the filter logic
-        function evaluateString(valToMatch, stringLogic)
+        function evaluateString(valToMatch, stringLogic, curCellElem)
         {
             valToMatch = valToMatch.toLowerCase()
             stringLogic = stringLogic.toLowerCase()
+            //Check if the cell value is a TODO item
+            var isCheckbox = false
+            var isDone = false
+            var findCheckBox = curCellElem.querySelectorAll("input[type='checkbox']")[0]
+            if(findCheckBox !== null && findCheckBox !== 'undefined' && findCheckBox !== undefined && typeof findCheckBox !== 'undefined')
+            {
+                isCheckbox = true
+                if(findCheckBox.checked){isDone = true}else{isDone = false}
+            }
+
             var logicLength = stringLogic.length
             var stringRemaining
             var findOr
@@ -433,7 +502,7 @@ function filterAttr(evt){
             var bool2
             var loopCtr = 0
 
-            //Loop throught the string logic
+            //Loop through the string logic
             for (var i = 0; i < logicLength; i++)
             {
                 loopCtr++
@@ -479,7 +548,15 @@ function filterAttr(evt){
                         //End of the logic string
                         i = logicLength
                         var string2 = stringRemaining.substring(0).trim()
-                        bool2 = findString(valToMatch, string2)
+                        if(string2.indexOf('{todo}') > -1 || string2.indexOf('{done}') > -1)
+                        {
+                            bool2 = checkIfTodo(string2,isCheckbox,isDone)
+                        }
+                        else
+                        {
+                            bool2 = findString(valToMatch, string2)
+                        }
+
                         if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
                     }
                     else if(newCondition == 'and' || newCondition == 'or')
@@ -488,7 +565,15 @@ function filterAttr(evt){
                         var string2 = stringRemaining.substring(0,foundChar).trim()
 
                         //Set boolean 2
-                        bool2 = findString(valToMatch, string2)
+                        if(string2.indexOf('{todo}') > -1 || string2.indexOf('{done}') > -1)
+                        {
+                            bool2 = checkIfTodo(string2,isCheckbox,isDone)
+                        }
+                        else
+                        {
+                            bool2 = findString(valToMatch, string2)
+                        }
+
                         if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
                     }
                     else
@@ -496,12 +581,13 @@ function filterAttr(evt){
                         //console.log("PARENTHESES... Calling evaluateString recursively...")
                         //Find the matching closing parenthesis
                         var foundGrouping = findClosingPar(stringRemaining)
+                        if(foundGrouping == "" || foundGrouping == null || foundGrouping == undefined){return true} //haven't finished the parenthesis close for group
                         foundChar = foundGrouping.length - 1
                         newCondition = '' //Need this to make sure at correct point at end of the loop where it adds to i = ...
                         foundGrouping = foundGrouping.trim()
                         foundGrouping = foundGrouping.substring(3) //Remove opening parenthesis
                         foundGrouping = foundGrouping.substring(0,foundGrouping.length - 3) //Remove opening parenthesis
-                        bool2 = evaluateString(valToMatch, foundGrouping)
+                        bool2 = evaluateString(valToMatch, foundGrouping, curCellElem)
                         if(prevCondition == 'or'){bool1 = (bool1 || bool2)}else{bool1 = (bool1 && bool2)}
                     }
                 }
@@ -511,7 +597,7 @@ function filterAttr(evt){
                     {
                         //Likely right after group parenthesis logic and need to skip ahead one more condition
                         //Won't do anything this time around and wait for it to loop back around
-                        //console.log('SKIPPING AHEAD as likley just finished group logic and needs to pickup the next operator or parenthesis')
+                        //console.log('SKIPPING AHEAD as likely just finished group logic and needs to pickup the next operator or parenthesis')
                     }
                     else
                     {
@@ -520,19 +606,28 @@ function filterAttr(evt){
                             //Find the string that is before the operator to be used for comparison
                             var string1 = stringRemaining.substring(0,foundChar).trim()
                             //Set boolean 1
-                            bool1 = findString(valToMatch, string1)
+                            if(string1.indexOf('{todo}') > -1 || string1.indexOf('{done}') > -1)
+                            {
+                                bool1 = checkIfTodo(string1,isCheckbox,isDone)
+                            }
+                            else
+                            {
+                                bool1 = findString(valToMatch, string1)
+                            }
+
                         }
                         else if(newCondition == '(')
                         {
                             //console.log("STARTING with a PARENTHESES...")
                             //Find the matching closing parenthesis
                             var foundGrouping = findClosingPar(stringRemaining)
+                            if(foundGrouping == "" || foundGrouping == null || foundGrouping == undefined){return true} //haven't finished the parenthesis close for group
                             foundChar = foundGrouping.length - 1
                             newCondition = '' //Need this to make sure at correct point at end of the loop where it adds to i = ...
                             foundGrouping = foundGrouping.trim()
                             foundGrouping = foundGrouping.substring(3) //Remove opening parenthesis
                             foundGrouping = foundGrouping.substring(0,foundGrouping.length - 3) //Remove opening parenthesis
-                            bool1 = evaluateString(valToMatch, foundGrouping)
+                            bool1 = evaluateString(valToMatch, foundGrouping, curCellElem)
                         }
                         else
                         {
@@ -540,7 +635,15 @@ function filterAttr(evt){
                                 //Or just simply looking for a single filter criteria
                             var string1 = stringRemaining.substring(0).trim()
                             //Set boolean 1
-                            bool1 = findString(valToMatch, string1)
+                            if(string1.indexOf('{todo}') > -1 || string1.indexOf('{done}') > -1)
+                            {
+                                bool1 = checkIfTodo(string1,isCheckbox,isDone)
+                            }
+                            else
+                            {
+                                bool1 = findString(valToMatch, string1)
+                            }
+
                             return bool1
                         }
                     }
@@ -602,6 +705,8 @@ function filterAttr(evt){
                     filterLogic = filterLogic.replace(/{s}/g,"{start}")
                     filterLogic = filterLogic.replace(/{e}/g,"{end}")
                     filterLogic = filterLogic.replace(/{d}/g,"{date}")
+                    filterLogic = filterLogic.replace(/{t}/g,"{todo}")
+                    filterLogic = filterLogic.replace(/{done}/g,"{done}")
 
                     //Current row / col value in table to check against filter
                     var curCell = curRow.cells[itm]
@@ -609,7 +714,7 @@ function filterAttr(evt){
                     var curElemText = curValue.toString().toLowerCase()
 
                     //Run the function to parse through all the logic including nested groupings (parentheses)
-                    showRow = evaluateString(curElemText, filterLogic)
+                    showRow = evaluateString(curElemText, filterLogic, curCell)
                 }
                 else
                 {
@@ -644,8 +749,15 @@ function filterAttr(evt){
             }
         }
         var filterRowCt = document.getElementById("filterRowCt")
-        filterRowCt.textContent = 'Rows: ' + rowCtr + ' | Sum: ' + aggSum.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Avg: ' + aggAvg.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Max: ' + aggMax.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Min: ' + aggMin.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+        if(aggMin == -99){aggMin = 0}
+        //Had to remove the regex to add commas as thousands separators as "Looks like Safari doesn't support lookbehind yet..."
+            //https://stackoverflow.com/questions/51568821/works-in-chrome-but-breaks-in-safari-invalid-regular-expression-invalid-group
+            //https://www.codeproject.com/Questions/5274806/Regex-works-in-chrome-but-breaks-in-safari-invalid
+        //filterRowCt.textContent = 'Rows: ' + rowCtr + ' | Sum: ' + aggSum.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Avg: ' + aggAvg.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Max: ' + aggMax.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' | Min: ' + aggMin.toFixed(2).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+        filterRowCt.textContent = 'Rows: ' + rowCtr + ' | Sum: ' + aggSum.toFixed(2).toString() + ' | Avg: ' + aggAvg.toFixed(2).toString() + ' | Max: ' + aggMax.toFixed(2).toString() + ' | Min: ' + aggMin.toFixed(2).toString()
     };
-}
+};
 
-document.addEventListener('click', filterAttr)
+//For pushing updates via powershell (after changing to correct directory): git add .;git commit -m "DESCRIPTION_OF_UPDATE";git push origin master
+
+document.addEventListener('click', filterAttr);
