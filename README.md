@@ -19,6 +19,7 @@ Each section below outlines details for each script that can be installed in Roa
 
 ### Description
 
+- Script located at: https://gitmurf.github.io/roam-javascript/attr-tables-filter.js
 - Detailed Instructions can be found below in the Demo section
 - To activate filtering, click the `---` in header row of attribute table (1st column)
   - ![image](https://user-images.githubusercontent.com/64155612/99346592-ceab7980-2849-11eb-807b-213dba4b3f78.png)
@@ -66,7 +67,10 @@ document.getElementsByTagName("head")[0].appendChild(s);
 
 **Detailed Instructions**
 
-INSERT SCREENSHOTS HERE...
+![screenshot](https://user-images.githubusercontent.com/64155612/96098438-f6907180-0e86-11eb-9cd4-ca23d9263d4f.png)
+![screenshot](https://user-images.githubusercontent.com/64155612/96098494-04de8d80-0e87-11eb-98dc-f8de7d01967c.png)
+![screenshot](https://user-images.githubusercontent.com/64155612/96098507-090aab00-0e87-11eb-8069-62a89738892c.png)
+![screenshot](https://user-images.githubusercontent.com/64155612/96098520-0e67f580-0e87-11eb-93a4-b03e6df5285c.png)
 
 **General Demo**
 
