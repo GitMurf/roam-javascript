@@ -4,6 +4,7 @@ Each section below outlines details for each script that can be installed in Roa
 
 ## Table of Contents
 
+- [Roam-Javascript GitHub Pages](https://gitmurf.github.io/roam-javascript/)
 - [Attribute Table Filters](#attribute-table-filters)
 - [Scratch Pad](#scratch-pad)
 - [Roam-highlighter Browser Extension](#roam-highlighter-browser-extension)
@@ -30,60 +31,60 @@ Each section below outlines details for each script that can be installed in Roa
 
 ### Demo
 
-# Roam-highlighter Browser Extension
+## Roam-highlighter Browser Extension
 
-## Description
+### Description
 
-## Installation
+### Installation
 
-## Demo
+### Demo
 
-# Filter Improvements
+## Filter Improvements
 
-## Description
+### Description
 
 - autofocus
 - select w/ ENTER
 - clear all filters
 
-## Installation
+### Installation
 
-## Demo
+### Demo
 
-# Query Improvements for TODO
+## Query Improvements for TODO
 
-## Description
+### Description
 
-## Installation
+### Installation
 
-## Demo
+### Demo
 
-# Cleanup before paste into Roam
+## Cleanup before paste into Roam
 
-## Description
+### Description
 
 - roam-format.html
 - roam-format.js
 
-## Installation
+### Installation
 
-## Demo
+### Demo
 
-# Smart Linking
+## Smart Linking
 
-## Description
+### Description
 
-## Installation
+### Installation
 
-## Demo
+### Demo
 
-# TEMPLATE
+## TEMPLATE
 
-## Description
+### Description
 
-## Installation
+### Installation
 
-## Demo
+### Demo
 
 # License
 
