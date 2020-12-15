@@ -138,7 +138,7 @@ function filterAttr(evt){
                 //Get the roam-table parent element
                 var roamTableElem = newInput.parentElement.parentElement
                 var gettingParent = roamTableElem.parentElement.parentElement.parentElement.parentElement.parentElement
-                var getChildBlocks = gettingParent.nextElementSibling.getElementsByClassName('rm-block-text')
+                var getChildBlocks = gettingParent.getElementsByClassName('rm-block-children')[0].getElementsByClassName('rm-block-text')
                 //Loop through each to set as default value for filters
                 for (var y = 0; y < getChildBlocks.length; y++)
                 {
