@@ -85,7 +85,7 @@ function filterAttr(evt){
     //Create span that shows row count
     var filterRowCt = document.createElement("span")
     filterRowCt.id = 'filterRowCt'
-    filterRowCt.style.cssText = 'display:flex;color:yellow;margin-left:15px;margin-top:4px;'
+    filterRowCt.style.cssText = 'display:flex;color:red;margin-left:15px;margin-top:4px;'
     filterRowCt.textContent = ''
     newInput.parentNode.insertBefore(filterRowCt, newInput.nextSibling)
 
