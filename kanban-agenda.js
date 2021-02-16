@@ -7,7 +7,8 @@ var use24HourTime = false; //true = 15:00 / false = 3 PM
 var addLeadingZero = false; //true = 03 PM / false = 3 PM (does NOT apply to 24 hr time)
 var dateDefault = 'Today';
 var selectDate = window.prompt("\nAdd to agenda on what date?\n\nOR pick random date:\n\ntw = this week\nnw = next week\nMonth and Year: tm, nm, ty, ny\n",dateDefault);
-var timeDefault = 'All Day';
+var allDayName = 'All Day';
+var timeDefault = allDayName;
 
 if(selectDate.toLowerCase() == 'today') {
     //If adding to today, then default will be next hour
@@ -219,7 +220,7 @@ if(findBlock.length > 0) {
     }
 
     //Add on the first and last kanban items
-    arrBlockStrings.unshift(timeDefault);
+    arrBlockStrings.unshift(allDayName);
     arrBlockStrings.push(needToSchedule);
 
     //Create the blocks
