@@ -1,5 +1,5 @@
-
-var curBlockRef = roam42.smartBlocks.activeWorkflow.vars["varCurBlockRef"];
+var curBlockRef = document.querySelector("textarea.rm-block-input").id;
+curBlockRef = curBlockRef.substring( curBlockRef.length -9);
 console.log(curBlockRef);
 var dailyAgendaTag = 'Daily agenda'; //Do NOT include the page brackets
 var needToSchedule = '[[Need to Plan]]'; //Use page brackets if you want this tracked as page/tag
