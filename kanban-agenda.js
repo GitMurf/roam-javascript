@@ -3,7 +3,7 @@ var curBlockRef = roam42.smartBlocks.activeWorkflow.vars["varCurBlockRef"];
 console.log(curBlockRef);
 var dailyAgendaTag = 'Daily agenda'; //Do NOT include the page brackets
 var needToSchedule = '[[Need to Plan]]'; //Use page brackets if you want this tracked as page/tag
-var use24HourTime = true; //true = 15:00 / false = 3 PM
+var use24HourTime = false; //true = 15:00 / false = 3 PM
 var addLeadingZero = false; //true = 03 PM / false = 3 PM (does NOT apply to 24 hr time)
 var dateDefault = 'Today';
 var selectDate = window.prompt("\nAdd to agenda on what date?\n\nOR pick random date:\n\ntw = this week\nnw = next week\nMonth and Year: tm, nm, ty, ny\n",dateDefault);
