@@ -10,7 +10,7 @@ Each section below outlines details for each script that can be installed in Roa
 - [Roam-highlighter Browser Extension](#roam-highlighter-browser-extension)
 - [Filter Improvements](#filter-improvements)
 - [Query Improvements for TODO](#query-improvements-for-todo)
-- [Cleanup before paste into Roam](#cleanup-before-paste-into-roam)\
+- [Cleanup before paste into Roam](#cleanup-before-paste-into-roam)
 - [Smart Linking](#smart-linking)
 - [Kanban Agenda](#kanban-agenda)
 - [TEMPLATE](#template)
@@ -175,11 +175,13 @@ I am keeping track of new ideas here: [Attribute Table Filters - Backlog of Idea
 
 ### Description
 
+Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any Daily Notes Page.
+
 ### Installation
 
 Copy the raw JS code from here: https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda.js
 
-Copy that into this smartblock "shell":
+Paste that code into this smartblock "shell" where it says `//paste code here...`:
 
 - ````
   #42SmartBlock Kanban Agenda
@@ -193,9 +195,13 @@ Copy that into this smartblock "shell":
 
 ![image](https://user-images.githubusercontent.com/64155612/108020351-0ce34100-6fd1-11eb-9cf6-f2bee61c2bf0.png)
 
+Should end up looking something like this:
+
 ![image](https://user-images.githubusercontent.com/64155612/108020289-e7563780-6fd0-11eb-8dbc-212d7b4ce70f.png)
 
 ### Demo
+
+![Kanban agenda GitHub Demo 1](https://user-images.githubusercontent.com/64155612/108021764-0efacf00-6fd4-11eb-8030-2681ef1b5b13.gif)
 
 ## TEMPLATE
 
