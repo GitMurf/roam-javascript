@@ -179,9 +179,11 @@ Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any D
 
 ### Installation
 
-Copy the raw JS code from here: https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda.js
+FIRST you must add the Kanban Agenda CSS from here: https://github.com/abhayprasanna/abhayprasanna.github.io/tree/master/kanban%20agenda#css
 
-Paste that code into this smartblock "shell" where it says `//paste code here...`:
+Next, copy the raw JS code from here: https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda.js
+
+Finally, paste that code into this smartblock "shell" where it says `//paste code here...`:
 
 - ````
   #42SmartBlock Kanban Agenda
