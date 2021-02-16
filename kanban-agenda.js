@@ -18,7 +18,7 @@ var dailyAgendaTag = 'Daily agenda'; //Do NOT include the page brackets [[ ]]
 
 var curBlockRef = document.querySelector("textarea.rm-block-input").id;
 curBlockRef = curBlockRef.substring( curBlockRef.length -9);
-console.log(curBlockRef);
+//console.log(curBlockRef);
 var selectDate = window.prompt("\nAdd to agenda on what date?\n\nOR pick random date:\n\ntw = this week\nnw = next week\nMonth and Year: tm, nm, ty, ny\n",dateDefault);
 var timeDefault = allDayName;
 
@@ -103,7 +103,7 @@ switch(selectTime.toLowerCase()) {
         break;
 }
 
-console.log(selectTime + ' --> ' + timeBlockPos);
+//console.log(selectTime + ' --> ' + timeBlockPos);
 
 //Check to see if the date page you are adding to is created yet
 var findBlock = window.roamAlphaAPI.q(`
@@ -115,12 +115,12 @@ var findBlock = window.roamAlphaAPI.q(`
 ]
 `, dnpTitle);
 
-console.log(dnpTitle);
-console.log(findBlock.length);
+//console.log(dnpTitle);
+//console.log(findBlock.length);
 
 if(findBlock.length > 0) {
     //Page is already created
-    console.log('Page already created for this day');
+    //console.log('Page already created for this day');
 } else {
     //DNP page not created so need to create it now
     //Do NOT create a custom UID as Roam automatically created the correct DNP format of 02-15-2021
@@ -145,7 +145,7 @@ if(findBlock.length > 0) {
 }
 
 var agendaPageUid = findBlock[0][0];
-console.log(agendaPageUid);
+//console.log(agendaPageUid);
 
 //Check to see if the Daily Template tag with kanban has been created yet
 var findBlock = window.roamAlphaAPI.q(`
@@ -163,7 +163,7 @@ var findBlock = window.roamAlphaAPI.q(`
 
 if(findBlock.length > 0) {
     //Kanban is already created
-    console.log('Kanban already created for this day');
+    //console.log('Kanban already created for this day');
 } else {
     //Need to create kanban and its 26 children blocks
     //Create array of the blocks to add
@@ -239,7 +239,7 @@ if(findBlock.length > 0) {
     //The daily agenda template root block
     var blockString = '[[' + dailyAgendaTag + ']]';
     var rootBlockUid = await roam42.common.createBlock(agendaPageUid, 0, blockString);
-    console.log(rootBlockUid);
+    //console.log(rootBlockUid);
     //The kanban block
     blockString = '{{[[' + 'kanban' + ']]}}';
     var kanbanBlockUid = await roam42.common.createBlock(rootBlockUid, 0, blockString);
@@ -264,7 +264,7 @@ if(findBlock.length > 0) {
 }
 
 var kanbanUid = findBlock[0][0]["uid"];
-console.log(kanbanUid);
+//console.log(kanbanUid);
 
 //Find the block of the time on the agenda the user entered
 var findBlock = window.roamAlphaAPI.q(`
@@ -278,7 +278,7 @@ var findBlock = window.roamAlphaAPI.q(`
 `, kanbanUid, timeBlockPos);
 
 var timeUid = findBlock[0][0]["uid"];
-console.log(timeUid);
+//console.log(timeUid);
 
 //Add the block reference to the time on agenda
 var blockString = '((' + curBlockRef + '))';
