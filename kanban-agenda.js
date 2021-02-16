@@ -269,7 +269,7 @@ var timeUid = findBlock[0][0]["uid"];
 console.log(timeUid);
 
 //Add the block reference to the time on agenda
-var blockString = curBlockRef;
+var blockString = '((' + curBlockRef + '))';
 var rootBlockUid = await roam42.common.createBlock(timeUid, -1, blockString);
 
 return '';
