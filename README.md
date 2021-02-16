@@ -12,6 +12,7 @@ Each section below outlines details for each script that can be installed in Roa
 - [Query Improvements for TODO](#query-improvements-for-todo)
 - [Cleanup before paste into Roam](#cleanup-before-paste-into-roam)\
 - [Smart Linking](#smart-linking)
+- [Kanban Agenda](#kanban-agenda)
 - [TEMPLATE](#template)
 - [License](#license)
 
@@ -167,6 +168,32 @@ I am keeping track of new ideas here: [Attribute Table Filters - Backlog of Idea
 ### Description
 
 ### Installation
+
+### Demo
+
+## Kanban Agenda
+
+### Description
+
+### Installation
+
+Copy the raw JS code from here: https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda.js
+
+Copy that into this smartblock "shell":
+
+- ````
+  #42SmartBlock Kanban Agenda
+  ````
+  - ````
+    <%JA:
+    ```javascript
+    //paste code here from https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda.js```
+    %>
+    ````
+
+![image](https://user-images.githubusercontent.com/64155612/108020351-0ce34100-6fd1-11eb-9cf6-f2bee61c2bf0.png)
+
+![image](https://user-images.githubusercontent.com/64155612/108020289-e7563780-6fd0-11eb-8dbc-212d7b4ce70f.png)
 
 ### Demo
 
