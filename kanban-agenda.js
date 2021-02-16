@@ -270,6 +270,10 @@ console.log(timeUid);
 
 //Add the block reference to the time on agenda
 var blockString = '((' + curBlockRef + '))';
-var rootBlockUid = await roam42.common.createBlock(timeUid, -1, blockString);
+var agendaBlockUid = await roam42.common.createBlock(timeUid, -1, blockString);
+
+//Add block embed under the agenda item to take notes under and sync back with original context
+var blockString = '{{[[embed]]: ((' + curBlockRef + '))}}';
+var embedBlockUid = await roam42.common.createBlock(agendaBlockUid, 0, blockString);
 
 return '';
