@@ -203,7 +203,7 @@ Should end up looking something like this:
 
 ## Custom Settings for the SmartBlock
 
-Copy and paste the following ANYWHERE into your Roam Graph and change the settings accordingly.
+Copy and paste the following ANYWHERE into your Roam Graph and change the #42Setting settings accordingly.
 
 - ````
   SETTINGS FOR #[[[[Kanban]] Agenda]]
