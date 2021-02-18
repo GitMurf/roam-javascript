@@ -199,7 +199,7 @@ Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any D
 
 Should end up looking something like this:
 
-![image](https://user-images.githubusercontent.com/64155612/108020289-e7563780-6fd0-11eb-8dbc-212d7b4ce70f.png)
+![image](https://user-images.githubusercontent.com/64155612/108416758-01b42f00-71e4-11eb-90d9-93030a2f78e7.png)
 
 ## Custom Settings for the SmartBlock
 
