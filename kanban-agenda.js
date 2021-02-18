@@ -3,10 +3,16 @@
 /* ************ ONLY CHANGE THE FOLLOWING ************ */
 /* *************************************************** */
 
-var use24HourTime = false; //true = 15:00 / false = 3 PM
-var addLeadingZero = false; //true = 03 PM / false = 3 PM (does NOT apply to 24 hr time)
+var use24HourTime = await roam42.settings.get('use24HourTime');
+    if(!use24HourTime){use24HourTime = false} //true = 15:00 / false = 3 PM
+    if(use24HourTime == false || use24HourTime == 'false'){use24HourTime = false}else{use24HourTime = true}
+
+var addLeadingZero = await roam42.settings.get('addLeadingZero');
+    if(!addLeadingZero){addLeadingZero = false} //true = 03 PM / false = 3 PM (does NOT apply to 24 hr time)
+    if(addLeadingZero == false || addLeadingZero == 'false'){addLeadingZero = false}else{addLeadingZero = true}
+
 var dateDefault = 'Today';
-var allDayName = 'All Day'; //Use page brackets if you want this tracked as page/tag
+var allDayName = '[[All Day]]'; //Use page brackets if you want this tracked as page/tag
 var needToSchedule = '[[Need to Plan]]'; //Use page brackets if you want this tracked as page/tag
 
 //If you change the following you MUST update the CSS code too (not recommended)
@@ -90,6 +96,9 @@ var dnpTitle = rmDateFormat.replace("[[","").replace("]]","");
 //Get the index position of the time selected 0 (all day) to 25 (unscheduled)
 switch(selectTime.toLowerCase()) {
     case "all day":
+        var timeBlockPos = 0;
+        break;
+    case "[[all day]]":
         var timeBlockPos = 0;
         break;
     case "":
@@ -237,7 +246,7 @@ if(findBlock.length > 0) {
 
     //Create the blocks
     //The daily agenda template root block
-    var blockString = '[[' + dailyAgendaTag + ']]';
+    var blockString = '[[' + dailyAgendaTag + ']] for [[' + dnpTitle + ']]';
     var rootBlockUid = await roam42.common.createBlock(agendaPageUid, 0, blockString);
     //console.log(rootBlockUid);
     //The kanban block
