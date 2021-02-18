@@ -179,11 +179,11 @@ Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any D
 
 ## Installation
 
-FIRST you must add the Kanban Agenda CSS from here: https://github.com/abhayprasanna/abhayprasanna.github.io/tree/master/kanban%20agenda#css
+1. FIRST you must add the Kanban Agenda CSS from here: https://github.com/abhayprasanna/abhayprasanna.github.io/tree/master/kanban%20agenda#css
 
-Next, copy the raw JS code from here: https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda/kanban-agenda-sb.js
+2. Next, copy the raw JS code from here: https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda/kanban-agenda-sb.js
 
-Finally, paste that code into this smartblock "shell" where it says `//paste code here...`:
+3. Finally, paste that code into this smartblock "shell" where it says `//paste code here...`:
 
 - ````
   #42SmartBlock Kanban Agenda
@@ -201,7 +201,7 @@ Should end up looking something like this:
 
 ![image](https://user-images.githubusercontent.com/64155612/108020289-e7563780-6fd0-11eb-8dbc-212d7b4ce70f.png)
 
-### Custom Settings for the SmartBlock
+## Custom Settings for the SmartBlock
 
 Copy and paste the following ANYWHERE into your Roam Graph and change the settings accordingly.
 
@@ -245,9 +245,9 @@ Copy and paste the following ANYWHERE into your Roam Graph and change the settin
       ^^Default:^^ false
       ````
 
-### Optional roam/js for additional features
+## Optional roam/js for additional features
 
-#### `On Click` of Daily Agenda title, add "Date" + "Next Event" + "Events Remaining Count"
+### `On Click` of Daily Agenda title: add "Date" + "Next Event" + "Events Remaining Count"
 
 - ````
   {{[[roam/js]]}}
@@ -261,7 +261,7 @@ Copy and paste the following ANYWHERE into your Roam Graph and change the settin
     ```
     ````
 
-#### Highlight current hour and add line to show minutes within the hour
+### Highlight current hour and add line to show minutes within the hour
 
 - ````
   {{[[roam/js]]}}
