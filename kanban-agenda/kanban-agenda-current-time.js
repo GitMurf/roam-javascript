@@ -36,7 +36,8 @@
         var currentMinInt = dayjs().minute();
         var shadowSize = ((currentMinInt / 60) * 40) - 20;
         var newCssStr = `.roam-article > div > div > div[data-path-page-links*='${dnpString}","Daily agenda'] .kanban-column-container > .kanban-column:nth-of-type(n+${currentHourInt + 2}):nth-of-type(-n+${currentHourInt + 2}),
-            #right-sidebar div[data-path-page-links*='${dnpString}","Daily agenda'] .kanban-column-container > .kanban-column:nth-of-type(n+${currentHourInt + 2}):nth-of-type(-n+${currentHourInt + 2}) {
+            #right-sidebar div[data-path-page-links*='${dnpString}","Daily agenda'] .kanban-column-container > .kanban-column:nth-of-type(n+${currentHourInt + 2}):nth-of-type(-n+${currentHourInt + 2}), .roam-article > div > div > div[data-path-page-links*='Daily agenda","${dnpString}'] .kanban-column-container > .kanban-column:nth-of-type(n+${currentHourInt + 2}):nth-of-type(-n+${currentHourInt + 2}),
+            #right-sidebar div[data-path-page-links*='Daily agenda","${dnpString}'] .kanban-column-container > .kanban-column:nth-of-type(n+${currentHourInt + 2}):nth-of-type(-n+${currentHourInt + 2}) {
                 background-color: var(--sliver-color) !important;
                 box-shadow: -22px ${shadowSize}px 0px 23px var(--current-hr-bg) inset !important;
 }
