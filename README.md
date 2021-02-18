@@ -191,7 +191,7 @@ Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any D
   - ````
     <%JA:
     ```javascript
-    //paste code here from https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda.js```
+    //paste code here from https://raw.githubusercontent.com/GitMurf/roam-javascript/master/kanban-agenda/kanban-agenda-sb.js```
     %>
     ````
 
