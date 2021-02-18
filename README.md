@@ -201,6 +201,51 @@ Should end up looking something like this:
 
 ![image](https://user-images.githubusercontent.com/64155612/108020289-e7563780-6fd0-11eb-8dbc-212d7b4ce70f.png)
 
+#### Custom Settings for the SmartBlock
+
+Copy and paste the following ANYWHERE into your Roam Graph and change the settings accordingly.
+
+- ````
+  SETTINGS FOR #[[[[Kanban]] Agenda]]
+  ````
+  - ````
+    #42Setting use24HourTime false
+    ````
+    - ````
+      OPTIONS:
+      ````
+      - ````
+        true
+        ````
+      - ````
+        false
+        ````
+    - ````
+      Desc: true = 15:00 / false = ^^3 PM^^
+      ````
+    - ````
+      ^^Default:^^ false
+      ````
+  - ````
+    #42Setting addLeadingZero false
+    ````
+    - ````
+      OPTIONS:
+      ````
+      - ````
+        true
+        ````
+      - ````
+        false
+        ````
+    - ````
+      Desc: true = 03 PM / false = ^^3 PM^^ (does NOT apply to 24 hr time)
+      ````
+    - ````
+      ^^Default:^^ false
+      ````
+
+
 ### Demo
 
 ![Kanban agenda GitHub Demo 1](https://user-images.githubusercontent.com/64155612/108021764-0efacf00-6fd4-11eb-8030-2681ef1b5b13.gif)
