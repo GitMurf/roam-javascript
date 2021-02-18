@@ -171,13 +171,13 @@ I am keeping track of new ideas here: [Attribute Table Filters - Backlog of Idea
 
 ### Demo
 
-## Kanban Agenda
+# Kanban Agenda
 
-### Description
+## Description
 
 Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any Daily Notes Page.
 
-### Installation
+## Installation
 
 FIRST you must add the Kanban Agenda CSS from here: https://github.com/abhayprasanna/abhayprasanna.github.io/tree/master/kanban%20agenda#css
 
@@ -201,7 +201,7 @@ Should end up looking something like this:
 
 ![image](https://user-images.githubusercontent.com/64155612/108020289-e7563780-6fd0-11eb-8dbc-212d7b4ce70f.png)
 
-#### Custom Settings for the SmartBlock
+### Custom Settings for the SmartBlock
 
 Copy and paste the following ANYWHERE into your Roam Graph and change the settings accordingly.
 
@@ -245,18 +245,47 @@ Copy and paste the following ANYWHERE into your Roam Graph and change the settin
       ^^Default:^^ false
       ````
 
+### Optional roam/js for additional features
 
-### Demo
+#### `On Click` of Daily Agenda title, add "Date" + "Next Event" + "Events Remaining Count"
+
+- ````
+  {{[[roam/js]]}}
+  ````
+  - ````
+    ```javascript
+    var kaoc = document.createElement("script");
+    kaoc.type = "text/javascript";
+    kaoc.src = "https://gitmurf.github.io/roam-javascript/kanban-agenda/kanban-agenda-on-click.js";
+    document.getElementsByTagName("head")[0].appendChild(kaoc);
+    ```
+    ````
+
+#### Highlight current hour and add line to show minutes within the hour
+
+- ````
+  {{[[roam/js]]}}
+  ````
+  - ````
+    ```javascript
+    var kact = document.createElement("script");
+    kact.type = "text/javascript";
+    kact.src = "https://gitmurf.github.io/roam-javascript/kanban-agenda/kanban-agenda-current-time.js";
+    document.getElementsByTagName("head")[0].appendChild(kact);
+    ```
+    ````
+
+## Demo
 
 ![Kanban agenda GitHub Demo 1](https://user-images.githubusercontent.com/64155612/108021764-0efacf00-6fd4-11eb-8030-2681ef1b5b13.gif)
 
-## TEMPLATE
+# TEMPLATE
 
-### Description
+## Description
 
-### Installation
+## Installation
 
-### Demo
+## Demo
 
 # License
 
