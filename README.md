@@ -177,6 +177,8 @@ I am keeping track of new ideas here: [Attribute Table Filters - Backlog of Idea
 
 Run this SmartBlock on any block to schedule/send it to a Kanban Agenda on any Daily Notes Page.
 
+Full MP4 Demo (apologize for the choppy video): https://user-images.githubusercontent.com/64155612/108444821-34741c80-7210-11eb-890d-2b65a892a128.mp4
+
 ## Installation
 
 1. FIRST you must add the Kanban Agenda CSS to a roam/css code block. Get it from here: https://github.com/abhayprasanna/abhayprasanna.github.io/tree/master/kanban%20agenda#css
