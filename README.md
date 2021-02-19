@@ -201,6 +201,10 @@ Should end up looking something like this:
 
 ![image](https://user-images.githubusercontent.com/64155612/108416758-01b42f00-71e4-11eb-90d9-93030a2f78e7.png)
 
+### DEMO
+
+![Kanban agenda GitHub Demo 1](https://user-images.githubusercontent.com/64155612/108021764-0efacf00-6fd4-11eb-8030-2681ef1b5b13.gif)
+
 ## Custom Settings for the SmartBlock
 
 Copy and paste the following ANYWHERE into your Roam Graph and change the #42Setting settings accordingly.
@@ -261,6 +265,9 @@ Copy and paste the following ANYWHERE into your Roam Graph and change the #42Set
     ```
     ````
 
+![Kanban agenda - onClick Demo1](https://user-images.githubusercontent.com/64155612/108443442-9e3ef700-720d-11eb-9823-121d6c735c5f.gif)
+
+
 ### Highlight current hour and add line to show minutes within the hour
 
 - ````
@@ -275,9 +282,8 @@ Copy and paste the following ANYWHERE into your Roam Graph and change the #42Set
     ```
     ````
 
-## Demo
+![Kanban agenda - highlightCurrentHour Demo1](https://user-images.githubusercontent.com/64155612/108443454-a39c4180-720d-11eb-90eb-1454e431ffeb.gif)
 
-![Kanban agenda GitHub Demo 1](https://user-images.githubusercontent.com/64155612/108021764-0efacf00-6fd4-11eb-8030-2681ef1b5b13.gif)
 
 # TEMPLATE
 
