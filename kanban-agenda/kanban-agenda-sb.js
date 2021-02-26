@@ -254,7 +254,7 @@ if(findBlock.length > 0) {
     var kanbanBlockUid = await roam42.common.createBlock(rootBlockUid, 0, blockString);
     //The timeslot children
     arrBlockStrings.forEach(eachString => {
-        var eachBlock = roam42.common.createBlock(kanbanBlockUid, -1, eachString)
+        var eachBlock = roam42.common.createBlock(kanbanBlockUid, "last", eachString)
     });
 
     await roam42.common.sleep(5); 
@@ -291,7 +291,7 @@ var timeUid = findBlock[0][0]["uid"];
 
 //Add the block reference to the time on agenda
 var blockString = '((' + curBlockRef + '))';
-var agendaBlockUid = await roam42.common.createBlock(timeUid, -1, blockString);
+var agendaBlockUid = await roam42.common.createBlock(timeUid, "last", blockString);
 
 //Add block embed under the agenda item to take notes under and sync back with original context
 var blockString = '{{[[embed]]: ((' + curBlockRef + '))}}';
